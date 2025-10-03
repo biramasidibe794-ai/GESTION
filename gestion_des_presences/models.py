@@ -29,17 +29,22 @@ class Utilisateur(models.Model):
     class Meta:
         ordering = ['nom', 'prenom']
 
+# Model pour représenter les administrateurs
 class Administrateur(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
     permissions = JSONField(default=dict, blank=True)
     def __str__(self):
         return f"Administrateur: {self.utilisateur.nom} {self.utilisateur.prenom}"
+
+# Model pour représenter les enseignants
 class Enseignant(models.Model):
     def __str__(self):
         return f"Enseignant: {self.utilisateur.nom} {self.utilisateur.prenom}"
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
     departement = models.CharField(max_length=100)
     specialite = models.CharField(max_length=100)
+
+# Model pour représenter les étudiants    
 class Etudiant(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
     numero_etudiant = models.CharField(max_length=20, unique=True)
@@ -48,6 +53,20 @@ class Etudiant(models.Model):
     Parents = models.ForeignKey('Parent', on_delete=models.SET_NULL, blank=True, null=True) 
     def __str__(self):
         return f"Etudiant: {self.utilisateur.nom} {self.utilisateur.prenom} ({self.numero_etudiant})"
+ 
+# Modeles pour la gestion des présences   
+class Sceance(models.Model):
+    id = models.AutoField(primary_key=True)
+    cours = models.CharField(max_length=100)
+    date = models.DateField()
+    heure_debut = models.TimeField()
+    heure_fin = models.TimeField()
+    etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
+    enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"Séance: {self.cours} le {self.date} de {self.heure_debut} à {self.heure_fin}"
+
+# Model pour gérer les cours    
 class Cours(models.Model):
     id = models.AutoField(primary_key=True)
     titre = models.CharField(max_length=200)
@@ -55,9 +74,12 @@ class Cours(models.Model):
     enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE) 
     def __str__(self):
         return f"Cours: {self.titre}"
+ 
+# Model pour gérer les présences des étudiants aux séances   
 class Presence(models.Model):
     id = models.AutoField(primary_key=True)
     etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
+    sceance = models.ForeignKey(Sceance, on_delete=models.CASCADE)
     Cours = models.ForeignKey(Cours, default=1, on_delete=models.CASCADE)
     enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE)
     date = models.DateField()
@@ -68,11 +90,15 @@ class Presence(models.Model):
     statut = models.CharField(max_length=10, choices=STATUT_CHOICES)
     def __str__(self):
         return f"Presence: {self.etudiant} - {self.date} - {self.statut}"
+    
+# Model pour gérer les classes       
 class Classe(models.Model):
     id = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=100)
     def __str__(self):
         return f"Classe: {self.nom} ({self.horaire})"
+    
+# Model pour gérer les inscriptions des étudiants aux classes
 class Inscription(models.Model):
     etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
@@ -80,6 +106,8 @@ class Inscription(models.Model):
 
     def __str__(self):
         return f"{self.etudiant} inscrit à {self.classe}"
+    
+# Model pour gérer les semestres
 class Semestre(models.Model):
     id = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=50)  # e.g., 'Semestre 1'
@@ -87,7 +115,8 @@ class Semestre(models.Model):
     date_fin = models.DateField()
     def __str__(self):
         return f"Semestre: {self.nom}"
-
+    
+# Model pour gérer les parents des étudiants
 class Parent(models.Model):
     id = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=100)
@@ -98,6 +127,8 @@ class Parent(models.Model):
     notification_preferences = JSONField(default=dict, blank=True)
     def __str__(self):
         return f"Parent: {self.nom} {self.prenom} ({self.email})"
+
+# Model pour gérer les années académiques
 class Anneer(models.Model):
     id = models.AutoField(primary_key=True)
     annee = models.IntegerField(unique=True, validators=[MinValueValidator(2000), MaxValueValidator(2100)])
