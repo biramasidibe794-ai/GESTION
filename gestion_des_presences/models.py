@@ -6,6 +6,7 @@ try:
     from django.db.models import JSONField
 except ImportError:
     from django.contrib.postgres.fields import JSONField
+""" la classe utilisateur represente les utilisateurs generiques du systeme """
 class Utilisateur(models.Model):
     id = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=100)
