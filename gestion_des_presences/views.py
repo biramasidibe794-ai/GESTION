@@ -1,4 +1,4 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 def accueil(request):
-    return render(request, 'presences/accueil.html')
+    return render(request, 'presence/accueil.html')
