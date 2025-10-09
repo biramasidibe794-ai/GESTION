@@ -47,5 +47,13 @@
         <p>Ce système permet de gérer la présence des étudiants et des enseignants.</p>
         <a class="btn" href="/admin/">Accéder à l’administration</a>
     </main>
+    <h1>Liste des Étudiants</h1>
+    <ul>
+        {% for etudiant in etudiants %}
+            <li>{{ etudiant.nom }} {{ etudiant.prenom }}</li>
+        {% empty %}
+            <li>Aucun étudiant trouvé.</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
