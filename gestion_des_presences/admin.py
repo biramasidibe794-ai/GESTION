@@ -23,7 +23,7 @@ class EnseignantAdmin(admin.ModelAdmin):
 
 @admin.register(Etudiant)
 class EtudiantAdmin(admin.ModelAdmin):
-    list_display = ('id', 'utilisateur', 'numero_etudiant', 'programme', 'Annee')
+    list_display = ('id', 'utilisateur', 'numero_etudiant', 'programme', 'annee')
     search_fields = ('utilisateur__nom', 'utilisateur__prenom', 'utilisateur__email', 'numero_etudiant', 'programme')
     list_filter = ('programme',)
     
@@ -52,8 +52,8 @@ class ClasseAdmin(admin.ModelAdmin):
     
 @admin.register(Anneer)
 class AnneerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nom')
-    search_fields = ('nom',)
+    list_display = ('id', 'annee')
+    search_fields = ('annee',)
     
 @admin.register(Parent)
 class ParentAdmin(admin.ModelAdmin):
@@ -62,6 +62,6 @@ class ParentAdmin(admin.ModelAdmin):
     
 @admin.register(Semestre)
 class SemestreAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nom', 'debut', 'fin')
-    search_fields = ('nom',)
-    list_filter = ('debut', 'fin')
+    list_display = ('id', 'nom', 'date_debut', 'date_fin')
+    search_fields = ('annee',)
+    list_filter = ('date_debut', 'date_fin')

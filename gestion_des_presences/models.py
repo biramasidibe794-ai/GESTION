@@ -49,8 +49,8 @@ class Etudiant(models.Model):
     utilisateur = models.OneToOneField(Utilisateur, on_delete=models.CASCADE)
     numero_etudiant = models.CharField(max_length=20, unique=True)
     programme = models.CharField(max_length=100)
-    Anneer=models.ForeignKey('Anneer', on_delete=models.SET_NULL, blank=True, null=True)
-    Parents = models.ForeignKey('Parent', on_delete=models.SET_NULL, blank=True, null=True) 
+    annee=models.ForeignKey('Anneer', on_delete=models.SET_NULL, blank=True, null=True)
+    parents = models.ForeignKey('Parent', on_delete=models.SET_NULL, blank=True, null=True) 
     def __str__(self):
         return f"Etudiant: {self.utilisateur.nom} {self.utilisateur.prenom} ({self.numero_etudiant})"
  
@@ -79,7 +79,7 @@ class Cours(models.Model):
 class Presence(models.Model):
     id = models.AutoField(primary_key=True)
     etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
-    sceance = models.ForeignKey(Sceance, on_delete=models.CASCADE)
+    sceance = models.ForeignKey(Sceance, on_delete=models.CASCADE, null=True, blank=True)
     Cours = models.ForeignKey(Cours, default=1, on_delete=models.CASCADE)
     enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE)
     date = models.DateField()
