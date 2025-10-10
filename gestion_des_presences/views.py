@@ -12,4 +12,4 @@ def accueil(request):
 # Nouvelle vue pour lister les étudiants
 def liste_etudiants(request):
     etudiants= Etudiant.objects.all()
-    return render(request, 'presence/liste_etudiants.html', {'etudiants': etudiants})
+    return render(request, 'liste_etudiants.html', {'etudiants': etudiants})
