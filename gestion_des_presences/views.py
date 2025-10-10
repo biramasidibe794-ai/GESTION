@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Etudiants
+from .models import Etudiant
 def accueil(request):
     etudiants = [
         {'nom': 'Dupont', 'prenom': 'Jean',},
@@ -9,7 +9,7 @@ def accueil(request):
     ]
     return render(request, 'presence/accueil.html' , {'etudiants': etudiants})
 
-
+# Nouvelle vue pour lister les étudiants
 def liste_etudiants(request):
-    etudiants= Etudiants.objects.all()
+    etudiants= Etudiant.objects.all()
     return render(request, 'presence/liste_etudiants.html', {'etudiants': etudiants})
