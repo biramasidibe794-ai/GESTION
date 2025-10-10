@@ -1,4 +1,9 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Étudiants - École de Santé Yamadou SIDIBÉ</title>
+    {% extends 'base.html' %}
 
 {% block title %}Liste des étudiants{% endblock %}
 
@@ -43,3 +48,15 @@
   </div>
 </div>
 {% endblock %}
+</head>
+<body>
+    <h1>Liste des Étudiants</h1>
+    <ul>
+        {% for etudiant in etudiants %}
+            <li>{{ etudiant.nom }} {{ etudiant.prenom }}</li>
+        {% empty %}
+            <li>Aucun étudiant trouvé.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
