@@ -3,11 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from .models import Anneer
-from .models import Etudiant
 
-def liste_etudiants(request):
-    etudiants = Etudiant.objects.all()
-    return render(request, 'presence/liste_etudiants.html', {'etudiants': etudiants})
 def accueil(request):
     etudiants = [
         {'nom': 'Dupont', 'prenom': 'Jean',},
