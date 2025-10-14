@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from .models import Anneer
+from .models import Etudiants  # Import the Etudiants model
 
 def accueil(request):
     etudiants = [
@@ -44,3 +45,6 @@ def annees_delete(request, pk):
         annee_obj.delete()
         return JsonResponse({'success': True})
     return JsonResponse({'success': False}, status=405)
+def liste_etudiants(request):
+    etudiants = Etudiants.objects.all()
+    return render(request, 'liste_etudiants.html', {'etudiants': etudiants})
