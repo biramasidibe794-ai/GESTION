@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter une Année</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">➕ Ajouter une Année</h2>
+
+    <form method="post" class="card p-4 shadow-sm bg-white">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="annee" class="form-label">Année scolaire</label>
+            <input type="number" name="annee" id="annee" class="form-control" placeholder="Ex : 2025" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
+        <a href="{% url 'liste_annees' %}" class="btn btn-secondary w-100 mt-2">Retour à la liste</a>
+    </form>
+</div>
+
+</body>
+</html>
