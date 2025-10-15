@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from .models import Anneer
 from .models import Etudiant  # Import the Etudiants model
+from .models import Enseignant, Cours
 
 def accueil(request):
     return render(request, 'presence/accueil.html')
@@ -43,6 +44,16 @@ def annees_delete(request, pk):
 def liste_etudiants(request):
     etudiants = Etudiant.objects.all()
     return render(request, 'liste_etudiants.html', {'etudiants': etudiants})
+
+
+def liste_enseignants(request):
+    enseignants = Enseignant.objects.select_related('utilisateur').all()
+    return render(request, 'liste_enseignants.html', {'enseignants': enseignants})
+
+
+def liste_cours(request):
+    cours = Cours.objects.select_related('enseignant__utilisateur').all()
+    return render(request, 'liste_cours.html', {'cours': cours})
 
 def ajouter_annee(request):
     # page de formulaire (GET) — la soumission POST est gérée par `annees_create` qui retourne JSON

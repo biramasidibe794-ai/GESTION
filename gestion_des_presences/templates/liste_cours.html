@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Liste des Cours</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Titre</th>
+        <th>Description</th>
+        <th>Enseignant</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in cours %}
+      <tr>
+        <td>{{ c.titre }}</td>
+        <td>{{ c.description }}</td>
+        <td>{{ c.enseignant.utilisateur.nom }} {{ c.enseignant.utilisateur.prenom }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3">Aucun cours trouvé</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Liste des Enseignants</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Département</th>
+        <th>Spécialité</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ens in enseignants %}
+      <tr>
+        <td>{{ ens.utilisateur.nom }}</td>
+        <td>{{ ens.utilisateur.prenom }}</td>
+        <td>{{ ens.departement }}</td>
+        <td>{{ ens.specialite }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">Aucun enseignant trouvé</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
