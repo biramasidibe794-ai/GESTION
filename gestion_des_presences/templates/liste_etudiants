@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -13,17 +13,17 @@
             <tr>
                 <th>Nom</th>
                 <th>Prénom</th>
-                <th>Classe</th>
-                <th>Âge</th>
+                <th>Programme</th>
+                <th>Année</th>
             </tr>
         </thead>
         <tbody>
             {% for e in etudiants %}
             <tr>
-                <td>{{ e.nom }}</td>
-                <td>{{ e.prenom }}</td>
-                <td>{{ e.classe }}</td>
-                <td>{{ e.age }}</td>
+                <td>{{ e.utilisateur.nom }}</td>
+                <td>{{ e.utilisateur.prenom }}</td>
+                <td>{{ e.programme }}</td>
+                <td>{{ e.annee.annee if e.annee else 'N/A' }}</td>
             </tr>
             {% empty %}
             <tr>

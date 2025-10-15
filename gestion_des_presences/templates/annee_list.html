@@ -113,7 +113,7 @@
       const tr = e.target.closest('tr');
       const id = tr.dataset.id;
       if (!confirm('Supprimer cette année ?')) return;
-      const res = await fetch(/annees/${id}/delete/, {
+      const res = await fetch(`/annees/${id}/delete/`, {
         method: 'POST',
         headers: {'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value}
       });
@@ -125,7 +125,7 @@
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const id = document.getElementById('anneeId').value;
-    const url = id ? /annees/${id}/update/ : '/annees/create/';
+    const url = id ? `/annees/${id}/update/` : '/annees/create/';
     const formData = new FormData(form);
     formAlert.innerHTML = '';
 
@@ -139,10 +139,10 @@
       if (data.success) {
         location.reload(); // recharge pour afficher la mise à jour
       } else {
-        formAlert.innerHTML = <div class="alert alert-danger">${data.error || 'Erreur inconnue'}</div>;
+        formAlert.innerHTML = `<div class="alert alert-danger">${data.error || 'Erreur inconnue'}</div>`;
       }
     } catch(err) {
-      formAlert.innerHTML = <div class="alert alert-danger">Erreur réseau</div>;
+      formAlert.innerHTML = `<div class="alert alert-danger">Erreur réseau</div>`;
     }
   });
 })();
