@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>{{ title }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      {{ form.titre.label_tag }}
+      {{ form.titre }}
+    </div>
+    <div class="mb-3">
+      {{ form.description.label_tag }}
+      {{ form.description }}
+    </div>
+    <div class="mb-3">
+      {{ form.enseignant.label_tag }}
+      {{ form.enseignant }}
+    </div>
+    <button class="btn btn-primary" type="submit">Enregistrer</button>
+    <a href="{% url 'liste_cours' %}" class="btn btn-secondary">Annuler</a>
+  </form>
+</div>
+{% endblock %}

@@ -3,6 +3,9 @@
 {% block content %}
 <div class="container mt-5">
   <h2 class="mb-4">Liste des Enseignants</h2>
+  <div class="mb-3">
+    <a href="{% url 'enseignant_create' %}" class="btn btn-success">Ajouter un enseignant</a>
+  </div>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -19,6 +22,10 @@
         <td>{{ ens.utilisateur.prenom }}</td>
         <td>{{ ens.departement }}</td>
         <td>{{ ens.specialite }}</td>
+        <td>
+          <a href="{% url 'enseignant_update' ens.id %}" class="btn btn-sm btn-primary">Modifier</a>
+          <a href="{% url 'enseignant_delete' ens.id %}" class="btn btn-sm btn-danger">Supprimer</a>
+        </td>
       </tr>
       {% empty %}
       <tr><td colspan="4">Aucun enseignant trouvé</td></tr>
