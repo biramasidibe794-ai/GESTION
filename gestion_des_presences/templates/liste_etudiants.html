@@ -18,7 +18,14 @@
                 <td>{{ e.utilisateur.nom }}</td>
                 <td>{{ e.utilisateur.prenom }}</td>
                 <td>{{ e.programme }}</td>
-                <td>{{ e.annee.annee if e.annee else 'N/A' }}</td>
+                                <td>
+                                    {% if e.annee %}
+                                        {{ e.annee.annee }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                
             </tr>
             {% empty %}
             <tr>
@@ -28,4 +35,6 @@
         </tbody>
     </table>
 </div>
+
+
 {% endblock %}

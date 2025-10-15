@@ -6,12 +6,7 @@ from .models import Anneer
 from .models import Etudiant  # Import the Etudiants model
 
 def accueil(request):
-    etudiants = [
-        {'nom': 'Dupont', 'prenom': 'Jean',},
-        {'nom': 'Martin', 'prenom': 'Claire'},
-        {'nom': 'Durand', 'prenom': 'Pierre'},
-    ]
-    return render(request, 'presence/accueil.html' , {'etudiants': etudiants})
+    return render(request, 'presence/accueil.html')
 
 def annees_list(request):
     annees = Anneer.objects.all().order_by('-annee')
