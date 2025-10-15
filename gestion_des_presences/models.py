@@ -80,7 +80,7 @@ class Presence(models.Model):
     id = models.AutoField(primary_key=True)
     etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
     sceance = models.ForeignKey(Sceance, on_delete=models.CASCADE, null=True, blank=True)
-    Cours = models.ForeignKey(Cours, default=1, on_delete=models.CASCADE)
+    cours = models.ForeignKey(Cours, default=1, on_delete=models.CASCADE)
     enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE)
     date = models.DateField()
     STATUT_CHOICES = [
@@ -96,7 +96,7 @@ class Classe(models.Model):
     id = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=100)
     def __str__(self):
-        return f"Classe: {self.nom} ({self.horaire})"
+        return f"Classe: {self.nom}"
     
 # Model pour gérer les inscriptions des étudiants aux classes
 class Inscription(models.Model):

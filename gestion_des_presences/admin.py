@@ -41,8 +41,8 @@ class CoursAdmin(admin.ModelAdmin):
     
 @admin.register(Presence)
 class PresenceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'etudiant', 'sceance', 'Cours', 'enseignant', 'date', 'statut')
-    search_fields = ('etudiant__utilisateur__nom', 'sceance__cours', 'Cours__titre', 'enseignant__utilisateur__nom', 'statut')
+    list_display = ('id', 'etudiant', 'sceance', 'cours', 'enseignant', 'date', 'statut')
+    search_fields = ('etudiant__utilisateur__nom', 'sceance__cours', 'cours__titre', 'enseignant__utilisateur__nom', 'statut')
     list_filter = ('statut', 'date')
 
 @admin.register(Classe)
@@ -63,5 +63,5 @@ class ParentAdmin(admin.ModelAdmin):
 @admin.register(Semestre)
 class SemestreAdmin(admin.ModelAdmin):
     list_display = ('id', 'nom', 'date_debut', 'date_fin')
-    search_fields = ('annee',)
+    search_fields = ('nom',)
     list_filter = ('date_debut', 'date_fin')
