@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h2>Utilisateurs</h2>
+  <a class="btn btn-success mb-3" href="{% url 'utilisateur_create' %}">Ajouter</a>
+  <table class="table table-striped">
+    <thead><tr><th>Nom</th><th>Prénom</th><th>Email</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.nom }}</td>
+        <td>{{ u.prenom }}</td>
+        <td>{{ u.email }}</td>
+        <td>
+          <a class="btn btn-sm btn-primary" href="{% url 'utilisateur_update' u.id %}">Modifier</a>
+          <a class="btn btn-sm btn-danger" href="{% url 'utilisateur_delete' u.id %}">Supprimer</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">Aucun utilisateur</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

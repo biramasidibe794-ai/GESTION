@@ -5,17 +5,29 @@
   <h2>{{ title }}</h2>
   <form method="post">
     {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
     <div class="mb-3">
       {{ form.titre.label_tag }}
       {{ form.titre }}
+      {% if form.titre.errors %}
+      <div class="text-danger small">{{ form.titre.errors }}</div>
+      {% endif %}
     </div>
     <div class="mb-3">
       {{ form.description.label_tag }}
       {{ form.description }}
+      {% if form.description.errors %}
+      <div class="text-danger small">{{ form.description.errors }}</div>
+      {% endif %}
     </div>
     <div class="mb-3">
       {{ form.enseignant.label_tag }}
       {{ form.enseignant }}
+      {% if form.enseignant.errors %}
+      <div class="text-danger small">{{ form.enseignant.errors }}</div>
+      {% endif %}
     </div>
     <button class="btn btn-primary" type="submit">Enregistrer</button>
     <a href="{% url 'liste_cours' %}" class="btn btn-secondary">Annuler</a>

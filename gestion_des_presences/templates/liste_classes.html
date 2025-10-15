@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h2>Classes</h2>
+  <a class="btn btn-success mb-3" href="{% url 'classe_create' %}">Ajouter</a>
+  <table class="table table-striped">
+    <thead><tr><th>Nom</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for c in items %}
+      <tr>
+        <td>{{ c.nom }}</td>
+        <td>
+          <a class="btn btn-sm btn-primary" href="{% url 'classe_update' c.id %}">Modifier</a>
+          <a class="btn btn-sm btn-danger" href="{% url 'classe_delete' c.id %}">Supprimer</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="2">Aucune classe</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

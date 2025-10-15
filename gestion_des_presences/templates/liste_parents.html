@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h2>Parents</h2>
+  <a class="btn btn-success mb-3" href="{% url 'parent_create' %}">Ajouter</a>
+  <table class="table table-striped">
+    <thead><tr><th>Nom</th><th>Prénom</th><th>Email</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for p in items %}
+      <tr>
+        <td>{{ p.nom }}</td>
+        <td>{{ p.prenom }}</td>
+        <td>{{ p.email }}</td>
+        <td>
+          <a class="btn btn-sm btn-primary" href="{% url 'parent_update' p.id %}">Modifier</a>
+          <a class="btn btn-sm btn-danger" href="{% url 'parent_delete' p.id %}">Supprimer</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">Aucun parent</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

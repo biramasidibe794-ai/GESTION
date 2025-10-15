@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1>Tableau de bord Admin</h1>
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <h5>Utilisateurs</h5>
+      <ul class="list-group">
+        <li class="list-group-item"><a href="{% url 'liste_utilisateurs' %}">Liste des utilisateurs</a></li>
+        <li class="list-group-item"><a href="{% url 'liste_administrateurs' %}">Administrateurs</a></li>
+      </ul>
+    </div>
+    <div class="col-md-4">
+      <h5>Personnes</h5>
+      <ul class="list-group">
+        <li class="list-group-item"><a href="{% url 'liste_enseignants' %}">Enseignants</a></li>
+        <li class="list-group-item"><a href="{% url 'liste_etudiants' %}">Étudiants</a></li>
+        <li class="list-group-item"><a href="{% url 'liste_parents' %}">Parents</a></li>
+      </ul>
+    </div>
+    <div class="col-md-4">
+      <h5>Cours & Présences</h5>
+      <ul class="list-group">
+        <li class="list-group-item"><a href="{% url 'liste_cours' %}">Cours</a></li>
+        <li class="list-group-item"><a href="{% url 'liste_sceances' %}">Séances</a></li>
+        <li class="list-group-item"><a href="{% url 'liste_presences' %}">Présences</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <h5>Structure</h5>
+      <ul class="list-group">
+        <li class="list-group-item"><a href="{% url 'liste_classes' %}">Classes</a></li>
+        <li class="list-group-item"><a href="{% url 'liste_semestres' %}">Semestres</a></li>
+        <li class="list-group-item"><a href="{% url 'liste_annees' %}">Années</a></li>
+      </ul>
+    </div>
+    <div class="col-md-8">
+      <h5>Inscriptions</h5>
+      <ul class="list-group">
+        <li class="list-group-item"><a href="{% url 'liste_inscriptions' %}">Inscriptions</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

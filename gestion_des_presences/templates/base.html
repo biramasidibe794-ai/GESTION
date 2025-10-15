@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Mon site Django{% endblock %}</title>
+  {% load static %}
 
   <!-- Lien Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,7 +16,10 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'accueil' %}">Gestion</a>
+      <a class="navbar-brand d-flex align-items-center" href="{% url 'accueil' %}">
+        <img src="{% static 'gestion_des_presences/img/logo.svg' %}" alt="Logo" style="height:38px;" />
+        <span class="ms-2">Gestion</span>
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -36,9 +40,38 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'liste_annees' %}">Années</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/">Admin</a>
+          {% if request.user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="manageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gérer</a>
+            <ul class="dropdown-menu" aria-labelledby="manageDropdown">
+              <li class="dropdown-header">Utilisateurs</li>
+              <li><a class="dropdown-item" href="{% url 'liste_utilisateurs' %}">Utilisateurs</a></li>
+              <li><a class="dropdown-item" href="{% url 'liste_administrateurs' %}">Administrateurs</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li class="dropdown-header">Personnes</li>
+              <li><a class="dropdown-item" href="{% url 'liste_enseignants' %}">Enseignants</a></li>
+              <li><a class="dropdown-item" href="{% url 'liste_etudiants' %}">Étudiants</a></li>
+              <li><a class="dropdown-item" href="{% url 'liste_parents' %}">Parents</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li class="dropdown-header">Cours & Présences</li>
+              <li><a class="dropdown-item" href="{% url 'liste_cours' %}">Cours</a></li>
+              <li><a class="dropdown-item" href="{% url 'liste_sceances' %}">Séances</a></li>
+              <li><a class="dropdown-item" href="{% url 'liste_presences' %}">Présences</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li class="dropdown-header">Structure</li>
+              <li><a class="dropdown-item" href="{% url 'liste_classes' %}">Classes</a></li>
+              <li><a class="dropdown-item" href="{% url 'liste_semestres' %}">Semestres</a></li>
+              <li><a class="dropdown-item" href="{% url 'liste_annees' %}">Années</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'liste_inscriptions' %}">Inscriptions</a></li>
+            </ul>
           </li>
+          {% endif %}
+          {% if request.user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/">Django Admin</a>
+          </li>
+          {% endif %}
         </ul>
       </div>
     </div>

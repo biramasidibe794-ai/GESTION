@@ -2,12 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from .models import Anneer
-from .models import Etudiant  # Import the Etudiants model
-from .models import Enseignant, Cours
+from .models import (
+    Anneer, Etudiant, Enseignant, Cours, Utilisateur, Administrateur,
+    Sceance, Presence, Classe, Inscription, Semestre, Parent
+)
 from .forms import EnseignantForm, CoursForm
 from django.shortcuts import redirect
 from .forms import EtudiantForm, AnneerForm
+from .forms import UtilisateurForm, AdministrateurForm, SceanceForm, PresenceForm, ClasseForm, InscriptionForm, SemestreForm, ParentForm
 
 def accueil(request):
     return render(request, 'presence/accueil.html')
@@ -93,13 +95,15 @@ def enseignant_delete(request, pk):
 
 # Cours CRUD
 def cours_create(request):
+    form = CoursForm(request.POST or None)
     if request.method == 'POST':
-        form = CoursForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('liste_cours')
-    else:
-        form = CoursForm()
+        try:
+            if form.is_valid():
+                form.save()
+                return redirect('liste_cours')
+        except Exception as e:
+            # Attach a non-field error to the form so it displays in the template
+            form.add_error(None, str(e))
     return render(request, 'cours_form.html', {'form': form, 'title': 'Ajouter un cours'})
 
 
@@ -191,3 +195,291 @@ def annee_delete_form(request, pk):
         a.delete()
         return redirect('liste_annees')
     return render(request, 'confirm_delete.html', {'object': a, 'type': 'année'})
+
+
+# Utilisateur CRUD
+def liste_utilisateurs(request):
+    users = Utilisateur.objects.all()
+    return render(request, 'liste_utilisateurs.html', {'users': users})
+
+
+def utilisateur_create(request):
+    if request.method == 'POST':
+        form = UtilisateurForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_utilisateurs')
+    else:
+        form = UtilisateurForm()
+    return render(request, 'utilisateur_form.html', {'form': form, 'title': 'Ajouter un utilisateur'})
+
+
+def utilisateur_update(request, pk):
+    u = get_object_or_404(Utilisateur, pk=pk)
+    if request.method == 'POST':
+        form = UtilisateurForm(request.POST, instance=u)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_utilisateurs')
+    else:
+        form = UtilisateurForm(instance=u)
+    return render(request, 'utilisateur_form.html', {'form': form, 'title': 'Modifier un utilisateur'})
+
+
+def utilisateur_delete(request, pk):
+    u = get_object_or_404(Utilisateur, pk=pk)
+    if request.method == 'POST':
+        u.delete()
+        return redirect('liste_utilisateurs')
+    return render(request, 'confirm_delete.html', {'object': u, 'type': 'utilisateur'})
+
+
+# Administrateur CRUD
+def liste_administrateurs(request):
+    items = Administrateur.objects.select_related('utilisateur').all()
+    return render(request, 'liste_administrateurs.html', {'items': items})
+
+
+def administrateur_create(request):
+    if request.method == 'POST':
+        form = AdministrateurForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_administrateurs')
+    else:
+        form = AdministrateurForm()
+    return render(request, 'administrateur_form.html', {'form': form, 'title': 'Ajouter un administrateur'})
+
+
+def administrateur_update(request, pk):
+    a = get_object_or_404(Administrateur, pk=pk)
+    if request.method == 'POST':
+        form = AdministrateurForm(request.POST, instance=a)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_administrateurs')
+    else:
+        form = AdministrateurForm(instance=a)
+    return render(request, 'administrateur_form.html', {'form': form, 'title': 'Modifier un administrateur'})
+
+
+def administrateur_delete(request, pk):
+    a = get_object_or_404(Administrateur, pk=pk)
+    if request.method == 'POST':
+        a.delete()
+        return redirect('liste_administrateurs')
+    return render(request, 'confirm_delete.html', {'object': a, 'type': 'administrateur'})
+
+
+# Classe CRUD
+def liste_classes(request):
+    items = Classe.objects.all()
+    return render(request, 'liste_classes.html', {'items': items})
+
+
+def classe_create(request):
+    if request.method == 'POST':
+        form = ClasseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_classes')
+    else:
+        form = ClasseForm()
+    return render(request, 'classe_form.html', {'form': form, 'title': 'Ajouter une classe'})
+
+
+def classe_update(request, pk):
+    c = get_object_or_404(Classe, pk=pk)
+    if request.method == 'POST':
+        form = ClasseForm(request.POST, instance=c)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_classes')
+    else:
+        form = ClasseForm(instance=c)
+    return render(request, 'classe_form.html', {'form': form, 'title': 'Modifier une classe'})
+
+
+def classe_delete(request, pk):
+    c = get_object_or_404(Classe, pk=pk)
+    if request.method == 'POST':
+        c.delete()
+        return redirect('liste_classes')
+    return render(request, 'confirm_delete.html', {'object': c, 'type': 'classe'})
+
+
+# Inscription CRUD
+def liste_inscriptions(request):
+    items = Inscription.objects.select_related('etudiant', 'classe').all()
+    return render(request, 'liste_inscriptions.html', {'items': items})
+
+
+def inscription_create(request):
+    if request.method == 'POST':
+        form = InscriptionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_inscriptions')
+    else:
+        form = InscriptionForm()
+    return render(request, 'inscription_form.html', {'form': form, 'title': 'Ajouter une inscription'})
+
+
+def inscription_delete(request, pk):
+    i = get_object_or_404(Inscription, pk=pk)
+    if request.method == 'POST':
+        i.delete()
+        return redirect('liste_inscriptions')
+    return render(request, 'confirm_delete.html', {'object': i, 'type': 'inscription'})
+
+
+# Semestre CRUD
+def liste_semestres(request):
+    items = Semestre.objects.all()
+    return render(request, 'liste_semestres.html', {'items': items})
+
+
+def semestre_create(request):
+    if request.method == 'POST':
+        form = SemestreForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_semestres')
+    else:
+        form = SemestreForm()
+    return render(request, 'semestre_form.html', {'form': form, 'title': 'Ajouter un semestre'})
+
+
+def semestre_update(request, pk):
+    s = get_object_or_404(Semestre, pk=pk)
+    if request.method == 'POST':
+        form = SemestreForm(request.POST, instance=s)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_semestres')
+    else:
+        form = SemestreForm(instance=s)
+    return render(request, 'semestre_form.html', {'form': form, 'title': 'Modifier un semestre'})
+
+
+def semestre_delete(request, pk):
+    s = get_object_or_404(Semestre, pk=pk)
+    if request.method == 'POST':
+        s.delete()
+        return redirect('liste_semestres')
+    return render(request, 'confirm_delete.html', {'object': s, 'type': 'semestre'})
+
+
+# Parent CRUD
+def liste_parents(request):
+    items = Parent.objects.all()
+    return render(request, 'liste_parents.html', {'items': items})
+
+
+def parent_create(request):
+    if request.method == 'POST':
+        form = ParentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_parents')
+    else:
+        form = ParentForm()
+    return render(request, 'parent_form.html', {'form': form, 'title': 'Ajouter un parent'})
+
+
+def parent_update(request, pk):
+    p = get_object_or_404(Parent, pk=pk)
+    if request.method == 'POST':
+        form = ParentForm(request.POST, instance=p)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_parents')
+    else:
+        form = ParentForm(instance=p)
+    return render(request, 'parent_form.html', {'form': form, 'title': 'Modifier un parent'})
+
+
+def parent_delete(request, pk):
+    p = get_object_or_404(Parent, pk=pk)
+    if request.method == 'POST':
+        p.delete()
+        return redirect('liste_parents')
+    return render(request, 'confirm_delete.html', {'object': p, 'type': 'parent'})
+
+
+# Sceance CRUD
+def liste_sceances(request):
+    items = Sceance.objects.select_related('etudiant', 'enseignant').all()
+    return render(request, 'liste_sceances.html', {'items': items})
+
+
+def sceance_create(request):
+    if request.method == 'POST':
+        form = SceanceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_sceances')
+    else:
+        form = SceanceForm()
+    return render(request, 'sceance_form.html', {'form': form, 'title': 'Ajouter une séance'})
+
+
+def sceance_update(request, pk):
+    s = get_object_or_404(Sceance, pk=pk)
+    if request.method == 'POST':
+        form = SceanceForm(request.POST, instance=s)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_sceances')
+    else:
+        form = SceanceForm(instance=s)
+    return render(request, 'sceance_form.html', {'form': form, 'title': 'Modifier une séance'})
+
+
+def sceance_delete(request, pk):
+    s = get_object_or_404(Sceance, pk=pk)
+    if request.method == 'POST':
+        s.delete()
+        return redirect('liste_sceances')
+    return render(request, 'confirm_delete.html', {'object': s, 'type': 'séance'})
+
+
+# Presence CRUD
+def liste_presences(request):
+    items = Presence.objects.select_related('etudiant', 'sceance', 'cours', 'enseignant').all()
+    return render(request, 'liste_presences.html', {'items': items})
+
+
+def presence_create(request):
+    if request.method == 'POST':
+        form = PresenceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_presences')
+    else:
+        form = PresenceForm()
+    return render(request, 'presence_form.html', {'form': form, 'title': 'Ajouter une présence'})
+
+
+def presence_update(request, pk):
+    p = get_object_or_404(Presence, pk=pk)
+    if request.method == 'POST':
+        form = PresenceForm(request.POST, instance=p)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_presences')
+    else:
+        form = PresenceForm(instance=p)
+    return render(request, 'presence_form.html', {'form': form, 'title': 'Modifier une présence'})
+
+
+def presence_delete(request, pk):
+    p = get_object_or_404(Presence, pk=pk)
+    if request.method == 'POST':
+        p.delete()
+        return redirect('liste_presences')
+    return render(request, 'confirm_delete.html', {'object': p, 'type': 'présence'})
+
+
+def admin_index(request):
+    return render(request, 'admin_index.html')
