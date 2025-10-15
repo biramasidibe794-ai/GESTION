@@ -55,7 +55,7 @@ from .models import Anneer
 def liste_annees(request):
     # Récupère toutes les années enregistrées
     annees = Anneer.objects.all().order_by('annee')
-    return render(request, 'annees/anne_list.html', {'annees': annees})
+    return render(request, 'annees/liste_annees.html', {'annees': annees})
 
 
 def ajouter_annee(request):
