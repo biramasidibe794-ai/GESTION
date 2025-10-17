@@ -2,11 +2,12 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4 text-center">Liste des Étudiants</h2>
-        <div class="mb-3">
-            <a href="{% url 'etudiant_create' %}" class="btn btn-success">Ajouter un étudiant</a>
-        </div>
-    <table class="table table-striped table-bordered">
+    <div class="section-title mb-3">
+        <h2 class="mb-0">Liste des Étudiants</h2>
+        <a href="{% url 'etudiant_create' %}" class="btn btn-accent">Ajouter un étudiant</a>
+    </div>
+    <div class="card card-ghost p-3">
+    <table class="table table-striped table-bordered mb-0">
         <thead class="table-dark">
             <tr>
                 <th>Nom</th>
@@ -41,6 +42,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
 
 

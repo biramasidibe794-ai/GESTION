@@ -2,11 +2,12 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h2 class="mb-4">Liste des Enseignants</h2>
-  <div class="mb-3">
-    <a href="{% url 'enseignant_create' %}" class="btn btn-success">Ajouter un enseignant</a>
+  <div class="section-title mb-3">
+    <h2 class="mb-0">Liste des Enseignants</h2>
+    <a href="{% url 'enseignant_create' %}" class="btn btn-accent">Ajouter un enseignant</a>
   </div>
-  <table class="table table-striped">
+  <div class="card card-ghost p-3">
+  <table class="table table-striped mb-0">
     <thead>
       <tr>
         <th>Nom</th>
@@ -28,9 +29,10 @@
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="4">Aucun enseignant trouvé</td></tr>
+      <tr><td colspan="4" class="text-center">Aucun enseignant trouvé</td></tr>
       {% endfor %}
     </tbody>
   </table>
+  </div>
 </div>
 {% endblock %}

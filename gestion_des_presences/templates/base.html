@@ -11,6 +11,8 @@
 
   <!-- JS Bootstrap (pour les modales, boutons, etc.) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Theme CSS -->
+  <link href="{% static 'gestion_des_presences/css/theme.css' %}" rel="stylesheet">
 </head>
 
 <body>
@@ -18,16 +20,14 @@
     <div class="container-fluid">
       <a class="navbar-brand d-flex align-items-center" href="{% url 'accueil' %}">
         <img src="{% static 'gestion_des_presences/img/logo1.jpg' %}" alt="Logo" style="height:50px;object-fit:cover;" />
-        <span class="ms-2">Gestion</span>
+        <span class="ms-2">Accueil</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'accueil' %}">Accueil</a>
-          </li>
+
           <li class="nav-item">
             <a class="nav-link" href="{% url 'liste_etudiants' %}">Étudiants</a>
           </li>
@@ -36,9 +36,6 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'liste_cours' %}">Cours</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'liste_annees' %}">Années</a>
           </li>
           {% if request.user.is_authenticated %}
           <li class="nav-item dropdown">
@@ -89,5 +86,23 @@
     <!-- Le contenu des autres pages s’affichera ici -->
     {% endblock %}
   </div>
+  <footer class="mt-5 py-4 bg-white">
+    <div class="container text-center footer-small">
+      © {{ now.year }} École de Santé Yamadou SIDIBÉ — Tous droits réservés
+    </div>
+  </footer>
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script>
+    // set active nav link based on current path
+    document.addEventListener('DOMContentLoaded', function(){
+      try{
+        const path = window.location.pathname;
+        document.querySelectorAll('.navbar-nav .nav-link').forEach(a=>{
+          if(a.getAttribute('href') === path) a.classList.add('active');
+        });
+      }catch(e){console.warn(e)}
+    });
+  </script>
 </body>
 </html>

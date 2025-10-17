@@ -2,46 +2,61 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h1>Tableau de bord Admin</h1>
-  <div class="row mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Tableau de bord</h1>
+    <span class="badge badge-soft py-2 px-3">Administration</span>
+  </div>
+
+  <div class="row g-4">
     <div class="col-md-4">
-      <h5>Utilisateurs</h5>
-      <ul class="list-group">
-        <li class="list-group-item"><a href="{% url 'liste_utilisateurs' %}">Liste des utilisateurs</a></li>
-        <li class="list-group-item"><a href="{% url 'liste_administrateurs' %}">Administrateurs</a></li>
-      </ul>
+      <div class="card h-100">
+        <div class="card-header bg-gradient">Utilisateurs <span class="badge bg-white text-primary float-end">{{ counts.utilisateurs }}</span></div>
+        <div class="card-body">
+          <a class="d-block mb-2" href="{% url 'liste_utilisateurs' %}">👥 Liste des utilisateurs</a>
+          <a class="d-block" href="{% url 'liste_administrateurs' %}">🔐 Administrateurs <span class="badge bg-light text-muted ms-2">{{ counts.administrateurs }}</span></a>
+        </div>
+      </div>
     </div>
     <div class="col-md-4">
-      <h5>Personnes</h5>
-      <ul class="list-group">
-        <li class="list-group-item"><a href="{% url 'liste_enseignants' %}">Enseignants</a></li>
-        <li class="list-group-item"><a href="{% url 'liste_etudiants' %}">Étudiants</a></li>
-        <li class="list-group-item"><a href="{% url 'liste_parents' %}">Parents</a></li>
-      </ul>
+      <div class="card h-100">
+        <div class="card-header bg-gradient">Personnes <span class="badge bg-white text-primary float-end">{{ counts.enseignants|add:counts.etudiants|add:counts.parents }}</span></div>
+        <div class="card-body">
+          <a class="d-block mb-2" href="{% url 'liste_enseignants' %}">👨‍🏫 Enseignants <span class="text-muted ms-2">({{ counts.enseignants }})</span></a>
+          <a class="d-block mb-2" href="{% url 'liste_etudiants' %}">🎓 Étudiants <span class="text-muted ms-2">({{ counts.etudiants }})</span></a>
+          <a class="d-block" href="{% url 'liste_parents' %}">👪 Parents <span class="text-muted ms-2">({{ counts.parents }})</span></a>
+        </div>
+      </div>
     </div>
     <div class="col-md-4">
-      <h5>Cours & Présences</h5>
-      <ul class="list-group">
-        <li class="list-group-item"><a href="{% url 'liste_cours' %}">Cours</a></li>
-        <li class="list-group-item"><a href="{% url 'liste_sceances' %}">Séances</a></li>
-        <li class="list-group-item"><a href="{% url 'liste_presences' %}">Présences</a></li>
-      </ul>
+      <div class="card h-100">
+        <div class="card-header bg-gradient">Cours & Présences <span class="badge bg-white text-primary float-end">{{ counts.cours }}</span></div>
+        <div class="card-body">
+          <a class="d-block mb-2" href="{% url 'liste_cours' %}">📚 Cours <span class="text-muted ms-2">({{ counts.cours }})</span></a>
+          <a class="d-block mb-2" href="{% url 'liste_sceances' %}">🗓️ Séances <span class="text-muted ms-2">({{ counts.sceances }})</span></a>
+          <a class="d-block" href="{% url 'liste_presences' %}">✅ Présences <span class="text-muted ms-2">({{ counts.presences }})</span></a>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="row mt-4">
+
+  <div class="row g-4 mt-1">
     <div class="col-md-4">
-      <h5>Structure</h5>
-      <ul class="list-group">
-        <li class="list-group-item"><a href="{% url 'liste_classes' %}">Classes</a></li>
-        <li class="list-group-item"><a href="{% url 'liste_semestres' %}">Semestres</a></li>
-        <li class="list-group-item"><a href="{% url 'liste_annees' %}">Années</a></li>
-      </ul>
+      <div class="card h-100">
+        <div class="card-header bg-gradient">Structure</div>
+        <div class="card-body">
+          <a class="d-block mb-2" href="{% url 'liste_classes' %}">Classes</a>
+          <a class="d-block mb-2" href="{% url 'liste_semestres' %}">Semestres</a>
+          <a class="d-block" href="{% url 'liste_annees' %}">Années</a>
+        </div>
+      </div>
     </div>
     <div class="col-md-8">
-      <h5>Inscriptions</h5>
-      <ul class="list-group">
-        <li class="list-group-item"><a href="{% url 'liste_inscriptions' %}">Inscriptions</a></li>
-      </ul>
+      <div class="card h-100">
+        <div class="card-header bg-gradient">Inscriptions</div>
+        <div class="card-body">
+          <a class="d-block" href="{% url 'liste_inscriptions' %}">Inscriptions</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

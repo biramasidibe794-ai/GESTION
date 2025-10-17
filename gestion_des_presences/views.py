@@ -10,6 +10,7 @@ from .forms import EnseignantForm, CoursForm
 from django.shortcuts import redirect
 from .forms import EtudiantForm, AnneerForm
 from .forms import UtilisateurForm, AdministrateurForm, SceanceForm, PresenceForm, ClasseForm, InscriptionForm, SemestreForm, ParentForm
+from django.contrib import messages
 
 def accueil(request):
     return render(request, 'presence/accueil.html')
@@ -66,7 +67,8 @@ def enseignant_create(request):
     if request.method == 'POST':
         form = EnseignantForm(request.POST)
         if form.is_valid():
-            form.save()
+            obj = form.save()
+            messages.success(request, 'Enseignant créé avec succès.')
             return redirect('liste_enseignants')
     else:
         form = EnseignantForm()
@@ -79,6 +81,7 @@ def enseignant_update(request, pk):
         form = EnseignantForm(request.POST, instance=ens)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Enseignant modifié avec succès.')
             return redirect('liste_enseignants')
     else:
         form = EnseignantForm(instance=ens)
@@ -100,6 +103,7 @@ def cours_create(request):
         try:
             if form.is_valid():
                 form.save()
+                messages.success(request, 'Cours créé avec succès.')
                 return redirect('liste_cours')
         except Exception as e:
             # Attach a non-field error to the form so it displays in the template
@@ -113,6 +117,7 @@ def cours_update(request, pk):
         form = CoursForm(request.POST, instance=c)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Cours modifié avec succès.')
             return redirect('liste_cours')
     else:
         form = CoursForm(instance=c)
@@ -139,6 +144,7 @@ def etudiant_create(request):
         form = EtudiantForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Étudiant créé avec succès.')
             return redirect('liste_etudiants')
     else:
         form = EtudiantForm()
@@ -208,6 +214,7 @@ def utilisateur_create(request):
         form = UtilisateurForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Utilisateur créé avec succès.')
             return redirect('liste_utilisateurs')
     else:
         form = UtilisateurForm()
@@ -245,6 +252,7 @@ def administrateur_create(request):
         form = AdministrateurForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Administrateur créé avec succès.')
             return redirect('liste_administrateurs')
     else:
         form = AdministrateurForm()
@@ -282,6 +290,7 @@ def classe_create(request):
         form = ClasseForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Classe créée avec succès.')
             return redirect('liste_classes')
     else:
         form = ClasseForm()
@@ -319,6 +328,7 @@ def inscription_create(request):
         form = InscriptionForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Inscription créée avec succès.')
             return redirect('liste_inscriptions')
     else:
         form = InscriptionForm()
@@ -344,6 +354,7 @@ def semestre_create(request):
         form = SemestreForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Semestre créé avec succès.')
             return redirect('liste_semestres')
     else:
         form = SemestreForm()
@@ -381,6 +392,7 @@ def parent_create(request):
         form = ParentForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Parent créé avec succès.')
             return redirect('liste_parents')
     else:
         form = ParentForm()
@@ -418,6 +430,7 @@ def sceance_create(request):
         form = SceanceForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Séance créée avec succès.')
             return redirect('liste_sceances')
     else:
         form = SceanceForm()
@@ -455,6 +468,7 @@ def presence_create(request):
         form = PresenceForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Présence enregistrée avec succès.')
             return redirect('liste_presences')
     else:
         form = PresenceForm()
@@ -482,4 +496,21 @@ def presence_delete(request, pk):
 
 
 def admin_index(request):
-    return render(request, 'admin_index.html')
+    # provide quick counts for the dashboard
+    context = {
+        'counts': {
+            'utilisateurs': Utilisateur.objects.count(),
+            'administrateurs': Administrateur.objects.count(),
+            'enseignants': Enseignant.objects.count(),
+            'etudiants': Etudiant.objects.count(),
+            'parents': Parent.objects.count(),
+            'cours': Cours.objects.count(),
+            'sceances': Sceance.objects.count(),
+            'presences': Presence.objects.count(),
+            'classes': Classe.objects.count(),
+            'semestres': Semestre.objects.count(),
+            'annees': Anneer.objects.count(),
+            'inscriptions': Inscription.objects.count(),
+        }
+    }
+    return render(request, 'admin_index.html', context)

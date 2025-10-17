@@ -6,13 +6,13 @@
 {% block content %}
 <div class="bg-light py-5">
   <div class="container">
-    <div class="row align-items-center">
-      <div class="col-md-6">
-        <h1 class="display-5 fw-bold">École de Santé Yamadou SIDIBÉ</h1>
+    <div class="hero row align-items-center">
+      <div class="col-md-7">
+        <h1 class="display-4">École de Santé Yamadou SIDIBÉ</h1>
         <p class="lead mt-3">Bienvenue sur la plateforme de gestion des présences. Utilisez le menu "Gérer" pour accéder aux interfaces (étudiants, enseignants, cours, présences, etc.).</p>
         <div class="mt-4">
           {% if request.user.is_authenticated %}
-          <a class="btn btn-primary btn-lg" href="{% url 'liste_enseignants' %}">Gérer maintenant</a>
+          <a class="btn btn-accent btn-lg me-2" href="{% url 'admin_index' %}">Gérer maintenant</a>
           {% else %}
           <a class="btn btn-primary btn-lg" href="{% url 'accueil' %}">Explorer</a>
           {% endif %}
@@ -21,7 +21,7 @@
           {% endif %}
         </div>
       </div>
-      <div class="col-md-6 text-center">
+      <div class="col-md-5 text-center">
         <div style="width:100%;height:320px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
           <img src="{% static 'gestion_des_presences/img/image1.jpg' %}" alt="Logo école" class="img-fluid w-100 h-100" style="object-fit:cover;opacity:0.95;" />
         </div>
@@ -30,29 +30,29 @@
 
     <div class="row mt-5">
       <div class="col-md-4">
-        <div class="card shadow-sm">
+        <div class="card card-ghost">
           <div class="card-body">
             <h5 class="card-title">Étudiants</h5>
             <p class="card-text">Consultez et gérez la liste des étudiants et leurs inscriptions.</p>
-            <a href="{% url 'liste_etudiants' %}" class="btn btn-sm btn-primary">Voir</a>
+            <a href="{% url 'liste_etudiants' %}" class="btn btn-sm btn-accent">Voir</a>
           </div>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card shadow-sm">
+        <div class="card card-ghost">
           <div class="card-body">
             <h5 class="card-title">Cours</h5>
             <p class="card-text">Créez, modifiez ou supprimez des cours et assignez des enseignants.</p>
-            <a href="{% url 'liste_cours' %}" class="btn btn-sm btn-primary">Voir</a>
+            <a href="{% url 'liste_cours' %}" class="btn btn-sm btn-accent">Voir</a>
           </div>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card shadow-sm">
+        <div class="card card-ghost">
           <div class="card-body">
             <h5 class="card-title">Présences</h5>
             <p class="card-text">Enregistrez et consultez les présences par séance.</p>
-            <a href="{% url 'liste_presences' %}" class="btn btn-sm btn-primary">Voir</a>
+            <a href="{% url 'liste_presences' %}" class="btn btn-sm btn-accent">Voir</a>
           </div>
         </div>
       </div>

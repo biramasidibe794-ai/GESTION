@@ -2,17 +2,18 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">➕ Ajouter une Année</h2>
+    <div class="card card-ghost p-4 mx-auto" style="max-width:540px;">
+        <h2 class="text-center mb-4">➕ Ajouter une Année</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="annee" class="form-label">Année scolaire</label>
+                <input type="number" name="annee" id="annee" class="form-control" placeholder="Ex : 2025" required>
+            </div>
 
-    <form method="post" class="card p-4 shadow-sm bg-white">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="annee" class="form-label">Année scolaire</label>
-            <input type="number" name="annee" id="annee" class="form-control" placeholder="Ex : 2025" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
-        <a href="{% url 'liste_annees' %}" class="btn btn-secondary w-100 mt-2">Retour à la liste</a>
-    </form>
+            <button type="submit" class="btn btn-accent w-100">Enregistrer</button>
+            <a href="{% url 'liste_annees' %}" class="btn btn-secondary w-100 mt-2">Retour à la liste</a>
+        </form>
+    </div>
 </div>
 {% endblock %}
