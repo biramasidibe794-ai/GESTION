@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Accueil - Gestion{% endblock %}
 
@@ -21,7 +22,9 @@
         </div>
       </div>
       <div class="col-md-6 text-center">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-original.svg" alt="logo" style="width:220px;opacity:0.9;"/>
+        <div style="width:100%;height:320px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          <img src="{% static 'gestion_des_presences/img/image1.jpg' %}" alt="Logo école" class="img-fluid w-100 h-100" style="object-fit:cover;opacity:0.95;" />
+        </div>
       </div>
     </div>
 

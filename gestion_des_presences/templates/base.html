@@ -17,7 +17,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
       <a class="navbar-brand d-flex align-items-center" href="{% url 'accueil' %}">
-        <img src="{% static 'gestion_des_presences/img/logo.svg' %}" alt="Logo" style="height:38px;" />
+        <img src="{% static 'gestion_des_presences/img/logo1.jpg' %}" alt="Logo" style="height:50px;object-fit:cover;" />
         <span class="ms-2">Gestion</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +78,13 @@
   </nav>
 
   <div class="container mt-4">
+    {% if messages %}
+    <div class="mt-3">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% block content %}
     <!-- Le contenu des autres pages s’affichera ici -->
     {% endblock %}
