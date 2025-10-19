@@ -20,13 +20,23 @@
         {{ form.programme.label_tag }}
         {{ form.programme }}
       </div>
-      <div class="mb-3">
-        {{ form.annee.label_tag }}
-        {{ form.annee }}
+      <div class="mb-3 d-flex align-items-center">
+        <div style="flex:1">
+          {{ form.annee.label_tag }}
+          {{ form.annee }}
+        </div>
+        <div class="ms-3">
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'ajouter_annee' %}">Ajouter année</a>
+        </div>
       </div>
-      <div class="mb-3">
-        {{ form.parents.label_tag }}
-        {{ form.parents }}
+      <div class="mb-3 d-flex align-items-center">
+        <div style="flex:1">
+          {{ form.parents.label_tag }}
+          {{ form.parents }}
+        </div>
+        <div class="ms-3">
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'parent_create' %}">Ajouter parent</a>
+        </div>
       </div>
       <button class="btn btn-accent" type="submit">Enregistrer</button>
       <a href="{% url 'liste_etudiants' %}" class="btn btn-secondary">Annuler</a>
