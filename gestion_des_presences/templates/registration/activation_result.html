@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Activation{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-5 mx-auto">
+    <div class="card shadow-soft">
+      <div class="card-body text-center p-4">
+        {% if ok %}
+        <h3>✅ Compte activé</h3>
+        <p>Votre compte est maintenant actif.</p>
+        <a href="{% url 'login' %}" class="btn btn-primary">Se connecter</a>
+        {% else %}
+        <h3>❌ Erreur d’activation</h3>
+        <p>{{ reason }}</p>
+        <a href="{% url 'accueil' %}" class="btn btn-outline-secondary">Retour</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

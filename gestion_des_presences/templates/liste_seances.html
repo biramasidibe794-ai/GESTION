@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Séances{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <h3 class="m-0">Séances</h3>
+  <a class="btn btn-primary btn-sm" href="{% url 'seance_create' %}">
+    <i class="bi bi-plus-lg"></i> Ajouter une séance
+  </a>
+</div>
+
+<div class="card shadow-soft">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Cours</th>
+            <th>Classe</th>
+            <th>Enseignant</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>Statut</th>
+            <th style="width:200px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in items %}
+          <tr>
+            <td>{{ s.cours.nom|default:s.cours }}</td>
+            <td>{{ s.classe.nom|default:s.classe }}</td>
+            <td>
+              {% if s.enseignant and s.enseignant.user %}
+                {{ s.enseignant.user.get_full_name|default:s.enseignant.user.username }}
+              {% else %}—{% endif %}
+            </td>
+            <td>{{ s.debut|date:"d/m/Y H:i" }}</td>
+            <td>{{ s.fin|date:"d/m/Y H:i" }}</td>
+            <td>
+              {% now "UTC" as now_utc %}
+              {% if s.fin|date:"U" < now_utc|date:"U" %}
+                <span class="badge text-bg-secondary">Terminée</span>
+              {% elif s.debut|date:"U" > now_utc|date:"U" %}
+                <span class="badge text-bg-info">À venir</span>
+              {% else %}
+                <span class="badge text-bg-success">En cours</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'seance_update' s.id %}">Modifier</a>
+              <a class="btn btn-sm btn-outline-secondary" href="{% url 'seance_update' s.id %}#qr">QR</a>
+              <a class="btn btn-sm btn-outline-danger" href="{% url 'seance_delete' s.id %}">Supprimer</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="text-muted">Aucune séance pour le moment.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3">
+      <a class="btn btn-outline-primary btn-sm" href="{% url 'seance_create' %}">Créer une séance</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

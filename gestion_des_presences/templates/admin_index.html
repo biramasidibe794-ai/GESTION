@@ -1,60 +1,104 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}Tableau de bord{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Tableau de bord</h1>
-    <span class="badge badge-soft py-2 px-3">Administration</span>
-  </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="mb-0">Tableau de bord</h1>
+  <span class="badge bg-primary-subtle text-primary py-2 px-3">Administration</span>
+</div>
 
-  <div class="row g-4">
-    <div class="col-md-4">
-      <div class="card h-100">
-        <div class="card-header bg-gradient">Utilisateurs <span class="badge bg-white text-primary float-end">{{ counts.utilisateurs }}</span></div>
-        <div class="card-body">
-          <a class="d-block mb-2" href="{% url 'liste_utilisateurs' %}">👥 Liste des utilisateurs</a>
-          <a class="d-block" href="{% url 'liste_administrateurs' %}">🔐 Administrateurs <span class="badge bg-light text-muted ms-2">{{ counts.administrateurs }}</span></a>
-        </div>
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="card h-100 shadow-soft">
+      <div class="card-header">Utilisateurs
+        <span class="badge bg-white text-primary float-end">{{ counts.utilisateurs }}</span>
       </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card h-100">
-        <div class="card-header bg-gradient">Personnes <span class="badge bg-white text-primary float-end">{{ counts.enseignants|add:counts.etudiants|add:counts.parents }}</span></div>
-        <div class="card-body">
-          <a class="d-block mb-2" href="{% url 'liste_enseignants' %}">👨‍🏫 Enseignants <span class="text-muted ms-2">({{ counts.enseignants }})</span></a>
-          <a class="d-block mb-2" href="{% url 'liste_etudiants' %}">🎓 Étudiants <span class="text-muted ms-2">({{ counts.etudiants }})</span></a>
-          <a class="d-block" href="{% url 'liste_parents' %}">👪 Parents <span class="text-muted ms-2">({{ counts.parents }})</span></a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card h-100">
-        <div class="card-header bg-gradient">Cours & Présences <span class="badge bg-white text-primary float-end">{{ counts.cours }}</span></div>
-        <div class="card-body">
-          <a class="d-block mb-2" href="{% url 'liste_cours' %}">📚 Cours <span class="text-muted ms-2">({{ counts.cours }})</span></a>
-          <a class="d-block mb-2" href="{% url 'liste_sceances' %}">🗓️ Séances <span class="text-muted ms-2">({{ counts.sceances }})</span></a>
-          <a class="d-block" href="{% url 'liste_presences' %}">✅ Présences <span class="text-muted ms-2">({{ counts.presences }})</span></a>
-        </div>
+      <div class="card-body">
+        <!-- ✅ Noms de routes corrigés -->
+        <a class="d-block mb-2" href="{% url 'admin_user_list' %}">👥 Liste des utilisateurs</a>
+        <a class="d-block" href="{% url 'admin_user_list' %}?role=admin">
+          🔐 Administrateurs
+          <span class="badge bg-light text-muted ms-2">{{ counts.administrateurs }}</span>
+        </a>
       </div>
     </div>
   </div>
 
-  <div class="row g-4 mt-1">
-    <div class="col-md-4">
-      <div class="card h-100">
-        <div class="card-header bg-gradient">Structure</div>
-        <div class="card-body">
-          <a class="d-block mb-2" href="{% url 'liste_classes' %}">Classes</a>
-          <a class="d-block mb-2" href="{% url 'liste_semestres' %}">Semestres</a>
-          <a class="d-block" href="{% url 'liste_annees' %}">Années</a>
-        </div>
+  <div class="col-md-4">
+    <div class="card h-100 shadow-soft">
+      <div class="card-header">Personnes
+        <span class="badge bg-white text-primary float-end">
+          {{ counts.enseignants|add:counts.etudiants|add:counts.parents }}
+        </span>
+      </div>
+      <div class="card-body">
+        <a class="d-block mb-2" href="{% url 'liste_enseignants' %}">
+          👨‍🏫 Enseignants <span class="text-muted ms-2">({{ counts.enseignants }})</span>
+        </a>
+        <a class="d-block mb-2" href="{% url 'liste_etudiants' %}">
+          🎓 Étudiants <span class="text-muted ms-2">({{ counts.etudiants }})</span>
+        </a>
+        <a class="d-block" href="{% url 'liste_parents' %}">
+          👪 Parents <span class="text-muted ms-2">({{ counts.parents }})</span>
+        </a>
       </div>
     </div>
-    <div class="col-md-8">
-      <div class="card h-100">
-        <div class="card-header bg-gradient">Inscriptions</div>
-        <div class="card-body">
-          <a class="d-block" href="{% url 'liste_inscriptions' %}">Inscriptions</a>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card h-100 shadow-soft">
+      <div class="card-header">Scolarité
+        <span class="badge bg-white text-primary float-end">
+          {{ counts.cours|add:counts.seances|add:counts.classes }}
+        </span>
+      </div>
+      <div class="card-body">
+        <a class="d-block mb-2" href="{% url 'liste_cours' %}">
+          📘 Cours <span class="text-muted ms-2">({{ counts.cours }})</span>
+        </a>
+        <a class="d-block mb-2" href="{% url 'liste_seances' %}">
+          🗓️ Séances <span class="text-muted ms-2">({{ counts.seances }})</span>
+        </a>
+        <a class="d-block mb-2" href="{% url 'liste_classes' %}">
+          🏷️ Classes <span class="text-muted ms-2">({{ counts.classes }})</span>
+        </a>
+        <a class="d-block mb-2" href="{% url 'liste_semestres' %}">
+          📅 Semestres <span class="text-muted ms-2">({{ counts.semestres }})</span>
+        </a>
+        <a class="d-block" href="{% url 'liste_annees' %}">
+          📆 Années <span class="text-muted ms-2">({{ counts.annees }})</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card h-100 shadow-soft">
+      <div class="card-header">Présences
+        <span class="badge bg-white text-primary float-end">{{ counts.presences }}</span>
+      </div>
+      <div class="card-body">
+        <a class="d-block mb-2" href="{% url 'liste_presences' %}">
+          ✅ Voir les présences
+        </a>
+        <a class="d-block" href="{% url 'liste_inscriptions' %}">
+          🧾 Inscriptions <span class="text-muted ms-2">({{ counts.inscriptions }})</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card h-100 shadow-soft">
+      <div class="card-header">Raccourcis</div>
+      <div class="card-body">
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-outline-primary btn-sm" href="{% url 'admin_user_list' %}">Utilisateurs</a>
+          <a class="btn btn-outline-primary btn-sm" href="{% url 'liste_seances' %}">Séances</a>
+          <a class="btn btn-outline-primary btn-sm" href="{% url 'liste_cours' %}">Cours</a>
+          <a class="btn btn-outline-primary btn-sm" href="{% url 'liste_presences' %}">Présences</a>
+          <a class="btn btn-outline-primary btn-sm" href="{% url 'qr_scanner' %}">Scanner</a>
+          <a class="btn btn-outline-secondary btn-sm" href="/admin/">Admin Django</a>
         </div>
       </div>
     </div>

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Mes séances{% endblock %}
+
+{% block content %}
+<h3 class="mb-3">Mes séances</h3>
+
+{% if seances %}
+  <div class="list-group shadow-sm">
+    {% for s in seances %}
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <div class="fw-semibold">{{ s.cours.nom|default:s.cours }}</div>
+          <div class="text-muted small">
+            Classe : {{ s.classe.nom|default:s.classe }} —
+            {{ s.debut|date:"d/m/Y H:i" }} → {{ s.fin|date:"H:i" }} —
+            Enseignant : {{ s.enseignant.user.get_full_name|default:s.enseignant.user.username }}
+          </div>
+        </div>
+        <div>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'liste_presences' %}#s{{ s.id }}">Détail</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-info">Aucune séance à venir.</div>
+{% endif %}
+{% endblock %}

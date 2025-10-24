@@ -32,6 +32,10 @@
                 <td>
                     <a href="{% url 'etudiant_update' e.id %}" class="btn btn-sm btn-primary">Modifier</a>
                     <a href="{% url 'etudiant_delete' e.id %}" class="btn btn-sm btn-danger">Supprimer</a>
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'etudiant_assign_class' e.id %}">
+  Assigner à une classe
+</a>
+
                 </td>
                 
             </tr>

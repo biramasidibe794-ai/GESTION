@@ -1,13 +1,20 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}Confirmer la suppression{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <h2>Confirmation de suppression</h2>
-  <p>Voulez-vous vraiment supprimer ce {{ type }} : <strong>{{ object }}</strong> ?</p>
-  <form method="post">
-    {% csrf_token %}
-    <button class="btn btn-danger" type="submit">Supprimer</button>
-    <a href="javascript:history.back()" class="btn btn-secondary">Annuler</a>
-  </form>
+<div class="card shadow-soft">
+  <div class="card-body">
+    <h3 class="mb-3">Confirmer la suppression</h3>
+    <p>Voulez-vous vraiment supprimer cet(te) {{ type|default:"élément" }} : 
+      <strong>{{ object }}</strong> ?</p>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">Annuler</a>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

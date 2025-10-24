@@ -1,108 +1,343 @@
-<!DOCTYPE html>
+{# gestion_des_presences/templates/base.html #}
+{% load static %}
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Mon site Django{% endblock %}</title>
-  {% load static %}
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#0d6efd"/>
+  <title>{% block title %}Présences — École de Santé Y. SIDIBÉ{% endblock %}</title>
 
-  <!-- Lien Bootstrap CSS -->
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- JS Bootstrap (pour les modales, boutons, etc.) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Theme CSS -->
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Ton CSS -->
   <link href="{% static 'gestion_des_presences/css/theme.css' %}" rel="stylesheet">
+
+  <style>
+    :root { --radius: 14px; }
+    body { background:#f6f7fb; }
+    .navbar-brand img { height: 40px; border-radius: 8px; object-fit: cover; }
+    .card, .offcanvas, .btn, .form-control, .form-select { border-radius: var(--radius); }
+    .shadow-soft { box-shadow: 0 8px 30px rgba(0,0,0,.06); }
+    .offcanvas-start { width: 86%; max-width: 320px; }
+    .container-narrow { max-width: 1100px; }
+    .bottom-bar { position: sticky; bottom: 0; z-index: 1020; background:#fff; border-top:1px solid rgba(0,0,0,.08); }
+    .bottom-bar .nav-link { padding:.6rem 0; font-size:.9rem; color:#6c757d; }
+    .bottom-bar .nav-link.active, .bottom-bar .nav-link:hover { color:#0d6efd; }
+    .bottom-bar .bi { font-size:1.2rem; display:block; }
+    @media (prefers-color-scheme: dark){
+      body{ background:#0c0f13; color:#e9ecef; }
+      .navbar.navbar-dark { background:#0b2239 !important; }
+      .card, .offcanvas, .bg-white { background:#11161d !important; color:#e9ecef; }
+      .bottom-bar{ background:#0b2239; border-top-color: rgba(255,255,255,.08); }
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
 </head>
-
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-dark bg-primary px-2">
     <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center" href="{% url 'accueil' %}">
-        <img src="{% static 'gestion_des_presences/img/logo1.jpg' %}" alt="Logo" style="height:50px;object-fit:cover;" />
-        <span class="ms-2">Accueil</span>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'liste_etudiants' %}">Étudiants</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'liste_enseignants' %}">Enseignants</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'liste_cours' %}">Cours</a>
-          </li>
-          {% if request.user.is_authenticated %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="manageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Gérer</a>
-            <ul class="dropdown-menu" aria-labelledby="manageDropdown">
-              <li class="dropdown-header">Utilisateurs</li>
-              <li><a class="dropdown-item" href="{% url 'liste_utilisateurs' %}">Utilisateurs</a></li>
-              <li><a class="dropdown-item" href="{% url 'liste_administrateurs' %}">Administrateurs</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li class="dropdown-header">Personnes</li>
-              <li><a class="dropdown-item" href="{% url 'liste_enseignants' %}">Enseignants</a></li>
-              <li><a class="dropdown-item" href="{% url 'liste_etudiants' %}">Étudiants</a></li>
-              <li><a class="dropdown-item" href="{% url 'liste_parents' %}">Parents</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li class="dropdown-header">Cours & Présences</li>
-              <li><a class="dropdown-item" href="{% url 'liste_cours' %}">Cours</a></li>
-              <li><a class="dropdown-item" href="{% url 'liste_sceances' %}">Séances</a></li>
-              <li><a class="dropdown-item" href="{% url 'liste_presences' %}">Présences</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li class="dropdown-header">Structure</li>
-              <li><a class="dropdown-item" href="{% url 'liste_classes' %}">Classes</a></li>
-              <li><a class="dropdown-item" href="{% url 'liste_semestres' %}">Semestres</a></li>
-              <li><a class="dropdown-item" href="{% url 'liste_annees' %}">Années</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="{% url 'liste_inscriptions' %}">Inscriptions</a></li>
-            </ul>
-          </li>
+      <!-- Menu mobile -->
+      <button class="btn btn-primary p-2 me-2 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainMenu" aria-controls="mainMenu">
+        <i class="bi bi-list fs-4"></i>
+      </button>
+
+      <!-- Logo -->
+      <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'accueil' %}">
+        <img src="{% static 'gestion_des_presences/img/logo1.jpg' %}" alt="Logo">
+        <span class="fw-semibold">Présences</span>
+      </a>
+
+      <!-- Menu desktop (dépend du rôle) -->
+      <ul class="navbar-nav flex-row d-none d-lg-flex gap-2">
+        {% if request.user.is_authenticated %}
+          {% with role=request.user.role|default:"" %}
+            {% if request.user.is_staff or role == "admin" or role == "enseignant" %}
+              <li class="nav-item"><a class="nav-link text-white" href="{% url 'liste_etudiants' %}">Étudiants</a></li>
+              <li class="nav-item"><a class="nav-link text-white" href="{% url 'liste_enseignants' %}">Enseignants</a></li>
+              <li class="nav-item"><a class="nav-link text-white" href="{% url 'liste_cours' %}">Cours</a></li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">Plus</a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="{% url 'liste_classes' %}">Classes</a></li>
+                  <li><a class="dropdown-item" href="{% url 'liste_inscriptions' %}">Inscriptions</a></li>
+                  <li><a class="dropdown-item" href="{% url 'liste_seances' %}">Séances</a></li>
+                  <li><a class="dropdown-item" href="{% url 'liste_presences' %}">Présences</a></li>
+                  <li><a class="dropdown-item" href="{% url 'liste_parents' %}">Parents</a></li>
+                  <li><a class="dropdown-item" href="{% url 'liste_semestres' %}">Semestres</a></li>
+                  <li><a class="dropdown-item" href="{% url 'liste_annees' %}">Années</a></li>
+                  <!-- Gestion utilisateurs (admin) -->
+                  {% if request.user.is_staff or role == "admin" %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'admin_user_list' %}">Utilisateurs</a></li>
+                  {% endif %}
+                </ul>
+              </li>
+              <!-- Scanner -->
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'qr_scanner' %}">
+                  <i class="bi bi-qr-code-scan me-1"></i>Scanner
+                </a>
+              </li>
+            {% elif role == "etudiant" %}
+              <li class="nav-item"><a class="nav-link text-white" href="{% url 'liste_seances' %}">Mes séances</a></li>
+              <li class="nav-item"><a class="nav-link text-white" href="{% url 'liste_presences' %}">Mes présences</a></li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'qr_scanner' %}">
+                  <i class="bi bi-qr-code-scan me-1"></i>Scanner
+                </a>
+              </li>
+            {% else %}
+              <li class="nav-item"><a class="nav-link text-white" href="{% url 'liste_seances' %}">Séances</a></li>
+            {% endif %}
+          {% endwith %}
+        {% else %}
+          <li class="nav-item"><a class="nav-link text-white" href="{% url 'liste_seances' %}">Séances</a></li>
+        {% endif %}
+      </ul>
+
+      <!-- Zone auth -->
+      <div class="d-flex align-items-center gap-2">
+        {% if request.user.is_authenticated %}
+          <span class="text-white small d-none d-sm-inline">
+            Bonjour, {{ request.user.get_full_name|default:request.user.username }}
+            {% if request.user.role %} — <em>{{ request.user.role }}</em>{% endif %}
+          </span>
+
+          {% if request.user.is_staff or request.user.role == "admin" %}
+            <a class="btn btn-outline-light btn-sm" href="/admin/">Admin</a>
           {% endif %}
-          {% if request.user.is_staff %}
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/">Django Admin</a>
-          </li>
-          {% endif %}
-        </ul>
+
+          <!-- Déconnexion POST -->
+          <form id="logout-form-top" action="{% url 'logout' %}" method="post" class="d-none">
+            {% csrf_token %}
+          </form>
+          <a class="btn btn-light btn-sm" href="#" onclick="document.getElementById('logout-form-top').submit(); return false;">
+            Déconnexion
+          </a>
+        {% else %}
+          <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Connexion</a>
+          <a class="btn btn-light btn-sm" href="{% url 'signup' %}">Inscription</a>
+        {% endif %}
       </div>
+
     </div>
   </nav>
 
-  <div class="container mt-4">
-    {% if messages %}
-    <div class="mt-3">
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-      {% endfor %}
+  <!-- OFFCANVAS (mobile) -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mainMenu">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Menu</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
-    {% endif %}
-    {% block content %}
-    <!-- Le contenu des autres pages s’affichera ici -->
-    {% endblock %}
+
+    <div class="offcanvas-body d-flex flex-column gap-2">
+      <a class="btn btn-light text-start shadow-soft" href="{% url 'accueil' %}">
+        <i class="bi bi-house me-2"></i> Accueil
+      </a>
+
+      {% if request.user.is_authenticated %}
+        {% with role=request.user.role|default:"" %}
+          {% if request.user.is_staff or role == "admin" or role == "enseignant" %}
+            <div class="text-uppercase small text-muted mt-2">Gestion</div>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_etudiants' %}">
+              <i class="bi bi-people me-2"></i> Étudiants
+            </a>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_enseignants' %}">
+              <i class="bi bi-person-badge me-2"></i> Enseignants
+            </a>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_parents' %}">
+              <i class="bi bi-people-fill me-2"></i> Parents
+            </a>
+
+            <div class="text-uppercase small text-muted mt-2">Pédagogie</div>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_cours' %}">
+              <i class="bi bi-journals me-2"></i> Cours
+            </a>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_classes' %}">
+              <i class="bi bi-diagram-3 me-2"></i> Classes
+            </a>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_semestres' %}">
+              <i class="bi bi-calendar2-week me-2"></i> Semestres
+            </a>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_annees' %}">
+              <i class="bi bi-calendar-event me-2"></i> Années
+            </a>
+
+            <div class="text-uppercase small text-muted mt-2">Présence</div>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_seances' %}">
+              <i class="bi bi-easel2 me-2"></i> Séances
+            </a>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_presences' %}">
+              <i class="bi bi-check2-circle me-2"></i> Présences
+            </a>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_inscriptions' %}">
+              <i class="bi bi-person-lines-fill me-2"></i> Inscriptions
+            </a>
+
+            {% if request.user.is_staff or role == "admin" %}
+              <div class="text-uppercase small text-muted mt-2">Administration</div>
+              <a class="btn btn-light text-start shadow-soft" href="{% url 'admin_user_list' %}">
+                <i class="bi bi-people-gear me-2"></i> Utilisateurs
+              </a>
+            {% endif %}
+
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'qr_scanner' %}">
+              <i class="bi bi-qr-code-scan me-2"></i> Scanner
+            </a>
+
+          {% elif role == "etudiant" %}
+            <div class="text-uppercase small text-muted mt-2">Mon espace</div>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_seances' %}">
+              <i class="bi bi-easel2 me-2"></i> Mes séances
+            </a>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_presences' %}">
+              <i class="bi bi-check2-circle me-2"></i> Mes présences
+            </a>
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'qr_scanner' %}">
+              <i class="bi bi-qr-code-scan me-2"></i> Scanner
+            </a>
+
+          {% else %}
+            <a class="btn btn-light text-start shadow-soft" href="{% url 'liste_seances' %}">
+              <i class="bi bi-easel2 me-2"></i> Séances
+            </a>
+          {% endif %}
+        {% endwith %}
+
+        <div class="mt-auto pt-2">
+          <div class="small text-muted mb-2">Connecté en tant que</div>
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-person-circle fs-4"></i>
+            <div>
+              <div class="fw-semibold">{{ request.user.get_full_name|default:request.user.username }}</div>
+              <div class="text-muted small">
+                {% if request.user.role %}Rôle : {{ request.user.role }}{% else %}Rôle : n/d{% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            {% if request.user.is_staff or request.user.role == "admin" %}
+              <a class="btn btn-outline-secondary" href="/admin/">Administration Django</a>
+            {% endif %}
+            <!-- Déconnexion POST -->
+            <form action="{% url 'logout' %}" method="post" class="d-grid">
+              {% csrf_token %}
+              <button class="btn btn-outline-danger" type="submit">Déconnexion</button>
+            </form>
+          </div>
+        </div>
+
+      {% else %}
+        <!-- Invité -->
+        <div class="mt-auto pt-2">
+          <div class="d-grid gap-2">
+            <a class="btn btn-primary" href="{% url 'login' %}">Connexion</a>
+            <a class="btn btn-outline-primary" href="{% url 'signup' %}">Inscription</a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
   </div>
-  <footer class="mt-5 py-4 bg-white">
-    <div class="container text-center footer-small">
-      © {{ now.year }} École de Santé Yamadou SIDIBÉ — Tous droits réservés
+
+  <!-- CONTENU -->
+  <main class="container container-narrow py-3">
+    {% include "_messages.html" %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- BARRE ACTIONS MOBILE -->
+  <nav class="bottom-bar d-lg-none">
+    <div class="container px-0">
+      <ul class="nav justify-content-around text-center">
+        {% if request.user.is_authenticated %}
+          {% with role=request.user.role|default:"" %}
+            {% if request.user.is_staff or role == "admin" or role == "enseignant" %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'liste_presences' %}">
+                  <i class="bi bi-check2-square"></i><span class="d-block">Présences</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'liste_seances' %}">
+                  <i class="bi bi-easel2"></i><span class="d-block">Séances</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'qr_scanner' %}">
+                  <i class="bi bi-qr-code-scan"></i><span class="d-block">Scanner</span>
+                </a>
+              </li>
+            {% elif role == "etudiant" %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'liste_presences' %}">
+                  <i class="bi bi-check2-square"></i><span class="d-block">Mes présences</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'liste_seances' %}">
+                  <i class="bi bi-easel2"></i><span class="d-block">Mes séances</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'qr_scanner' %}">
+                  <i class="bi bi-qr-code-scan"></i><span class="d-block">Scanner</span>
+                </a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'liste_seances' %}">
+                  <i class="bi bi-easel2"></i><span class="d-block">Séances</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'liste_cours' %}">
+                  <i class="bi bi-journals"></i><span class="d-block">Cours</span>
+                </a>
+              </li>
+            {% endif %}
+          {% endwith %}
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'liste_seances' %}">
+              <i class="bi bi-easel2"></i><span class="d-block">Séances</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'liste_cours' %}">
+              <i class="bi bi-journals"></i><span class="d-block">Cours</span>
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- FOOTER -->
+  <footer class="py-4">
+    <div class="container text-center text-muted small">
+      © {% now "Y" %} École de Santé Yamadou SIDIBÉ — Tous droits réservés
     </div>
   </footer>
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  {% block extra_js %}{% endblock %}
   <script>
-    // set active nav link based on current path
-    document.addEventListener('DOMContentLoaded', function(){
-      try{
-        const path = window.location.pathname;
-        document.querySelectorAll('.navbar-nav .nav-link').forEach(a=>{
-          if(a.getAttribute('href') === path) a.classList.add('active');
+    // Active le lien courant
+    (function(){
+      const path = window.location.pathname.replace(/\/+$/, "");
+      document.querySelectorAll('.offcanvas-body a.btn, .bottom-bar .nav-link, .navbar .nav-link')
+        .forEach(a => {
+          const href = (a.getAttribute('href') || '').replace(/\/+$/, "");
+          if(href && href === path){ a.classList.add('active'); }
         });
-      }catch(e){console.warn(e)}
-    });
+    })();
   </script>
 </body>
 </html>

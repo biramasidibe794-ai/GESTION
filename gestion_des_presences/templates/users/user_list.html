@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Utilisateurs{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <h3 class="m-0">Utilisateurs</h3>
+  <div class="d-flex gap-2">
+    <a class="btn btn-primary btn-sm" href="{% url 'admin_user_create' %}">
+      <i class="bi bi-person-plus"></i> Créer un utilisateur
+    </a>
+  </div>
+</div>
+
+<div class="card shadow-soft">
+  <div class="card-body">
+    <form class="row g-2 mb-3" method="get">
+      <div class="col-12 col-lg-3">
+        <select name="role" class="form-select">
+          <option value="">— Tous les rôles —</option>
+          <option value="admin" {% if role == "admin" %}selected{% endif %}>Admin</option>
+          <option value="enseignant" {% if role == "enseignant" %}selected{% endif %}>Enseignant</option>
+          <option value="etudiant" {% if role == "etudiant" %}selected{% endif %}>Étudiant</option>
+          <option value="parent" {% if role == "parent" %}selected{% endif %}>Parent</option>
+        </select>
+      </div>
+      <div class="col-12 col-lg-5">
+        <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Rechercher (nom, email, username)…">
+      </div>
+      <div class="col-12 col-lg-2">
+        <button class="btn btn-outline-primary w-100" type="submit">Filtrer</button>
+      </div>
+      <div class="col-12 col-lg-2">
+        <a class="btn btn-outline-secondary w-100" href="{% url 'admin_user_list' %}">Réinitialiser</a>
+      </div>
+    </form>
+
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Actif</th>
+            <th style="width:160px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.username }}</td>
+            <td>{{ u.get_full_name }}</td>
+            <td>{{ u.email }}</td>
+            <td class="text-capitalize">{{ u.role|default:"(n/d)" }}</td>
+            <td>
+              {% if u.is_active %}
+                <span class="badge text-bg-success">Actif</span>
+              {% else %}
+                <span class="badge text-bg-secondary">Inactif</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'admin_user_update_role' u.id %}">
+                Rôle / Activation
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="text-muted">Aucun utilisateur.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

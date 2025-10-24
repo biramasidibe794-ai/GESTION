@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +25,10 @@ SECRET_KEY = 'django-insecure-d90b420_fzdtp172wwf2py*6m8_%3rsphi9u-x--$tr6k6j(ao
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",    # 🔧 CHANGÉ
+    "localhost",    # 🔧 CHANGÉ
+]
 
 
 # Application definition
@@ -38,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'gestion_des_presences',
+    'gestion_des_presences',     # (ton app)
 ]
 
 MIDDLEWARE = [
@@ -56,6 +58,7 @@ ROOT_URLCONF = 'gestion.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # Tu peux garder tes templates dans l’app comme tu l'avais déjà :
         'DIRS': [BASE_DIR / 'gestion_des_presences' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -101,16 +104,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# 🔧 CHANGÉ : on pointe vers le User custom dans **gestion_des_presences**
+AUTH_USER_MODEL = "gestion_des_presences.User"
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = 'fr'                 # 🔧 CHANGÉ
+TIME_ZONE = 'Africa/Bamako'          # 🔧 CHANGÉ
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -118,9 +121,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']     # ➕ AJOUT (optionnel en dev si tu as un dossier /static)
+STATIC_ROOT = BASE_DIR / 'staticfiles'       # ➕ AJOUT (utile pour collectstatic en prod)
+
+# ➕ AJOUT : fichiers uploadés
+MEDIA_URL = 'media/'                         # ➕ AJOUT
+MEDIA_ROOT = BASE_DIR / 'media'              # ➕ AJOUT
+LOGIN_REDIRECT_URL = "accueil"
+LOGOUT_REDIRECT_URL = "accueil"
+
+
+# Email (activation de compte) — en dev, envoie dans la console
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"   # ➕ AJOUT
+DEFAULT_FROM_EMAIL = "no-reply@example.com"                        # ➕ AJOUT
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-

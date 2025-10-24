@@ -1,63 +1,224 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Accueil - Gestion{% endblock %}
+{% extends "base.html" %}
+{% block title %}Accueil{% endblock %}
 
 {% block content %}
-<div class="bg-light py-5">
-  <div class="container">
-    <div class="hero row align-items-center">
-      <div class="col-md-7">
-        <h1 class="display-4">École de Santé Yamadou SIDIBÉ</h1>
-        <p class="lead mt-3">Bienvenue sur la plateforme de gestion des présences. Utilisez le menu "Gérer" pour accéder aux interfaces (étudiants, enseignants, cours, présences, etc.).</p>
-        <div class="mt-4">
-          {% if request.user.is_authenticated %}
-          <a class="btn btn-accent btn-lg me-2" href="{% url 'admin_index' %}">Gérer maintenant</a>
+<div class="row g-3">
+
+  {# --------- INVITÉ --------- #}
+  {% if role == "guest" %}
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-soft">
+        <div class="card-body">
+          <h3 class="mb-2">Bienvenue 👋</h3>
+          <p class="text-muted">Connectez-vous pour accéder à vos fonctionnalités.</p>
+          <div class="d-flex gap-2">
+            <a class="btn btn-primary" href="{% url 'login' %}">Connexion</a>
+            <a class="btn btn-outline-primary" href="{% url 'signup' %}">Inscription</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {# --------- ENSEIGNANT --------- #}
+  {% if role == "enseignant" %}
+    <div class="col-12">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h3 class="m-0">Espace enseignant</h3>
+        <div class="d-flex gap-2">
+          <a href="{% url 'liste_cours' %}" class="btn btn-outline-primary btn-sm">Mes cours</a>
+          <a href="{% url 'liste_seances' %}" class="btn btn-primary btn-sm">Mes séances</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+      <div class="card shadow-soft text-center">
+        <div class="card-body">
+          <div class="text-muted">Cours</div>
+          <div class="display-6 fw-bold">{{ kpi.total_cours|default:"0" }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="card shadow-soft text-center">
+        <div class="card-body">
+          <div class="text-muted">Séances aujourd'hui</div>
+          <div class="display-6 fw-bold">{{ kpi.seances_aujourdhui|default:"0" }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card shadow-soft">
+        <div class="card-body">
+          <h5 class="mb-3">Prochaines séances</h5>
+          {% if prochaines_seances %}
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>Début</th>
+                    <th>Fin</th>
+                    <th>Classe</th>
+                    <th>Cours</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for s in prochaines_seances %}
+                  <tr>
+                    <td>{{ s.debut }}</td>
+                    <td>{{ s.fin }}</td>
+                    <td>{{ s.classe.nom }}</td>
+                    <td>{{ s.cours.titre }}</td>
+                    <td>
+                      <a class="btn btn-sm btn-outline-primary" href="{% url 'seance_detail' s.id %}">
+                        Projecteur QR
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
           {% else %}
-          <a class="btn btn-primary btn-lg" href="{% url 'accueil' %}">Explorer</a>
-          {% endif %}
-          {% if request.user.is_staff %}
-          <a class="btn btn-outline-secondary btn-lg ms-2" href="/admin/">Django Admin</a>
+            <div class="text-muted">Aucune séance à venir.</div>
           {% endif %}
         </div>
       </div>
-      <div class="col-md-5 text-center">
-        <div style="width:100%;height:320px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
-          <img src="{% static 'gestion_des_presences/img/image1.jpg' %}" alt="Logo école" class="img-fluid w-100 h-100" style="object-fit:cover;opacity:0.95;" />
+    </div>
+  {% endif %}
+
+  {# --------- ETUDIANT --------- #}
+  {% if role == "etudiant" %}
+    <div class="col-12">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h3 class="m-0">Espace étudiant</h3>
+        <div class="d-flex gap-2">
+          <a href="{% url 'liste_seances' %}" class="btn btn-primary btn-sm">Mes séances</a>
+          <a href="{% url 'liste_presences' %}" class="btn btn-outline-primary btn-sm">Mes présences</a>
         </div>
       </div>
     </div>
 
-    <div class="row mt-5">
-      <div class="col-md-4">
-        <div class="card card-ghost">
-          <div class="card-body">
-            <h5 class="card-title">Étudiants</h5>
-            <p class="card-text">Consultez et gérez la liste des étudiants et leurs inscriptions.</p>
-            <a href="{% url 'liste_etudiants' %}" class="btn btn-sm btn-accent">Voir</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card card-ghost">
-          <div class="card-body">
-            <h5 class="card-title">Cours</h5>
-            <p class="card-text">Créez, modifiez ou supprimez des cours et assignez des enseignants.</p>
-            <a href="{% url 'liste_cours' %}" class="btn btn-sm btn-accent">Voir</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card card-ghost">
-          <div class="card-body">
-            <h5 class="card-title">Présences</h5>
-            <p class="card-text">Enregistrez et consultez les présences par séance.</p>
-            <a href="{% url 'liste_presences' %}" class="btn btn-sm btn-accent">Voir</a>
-          </div>
+    <div class="col-6 col-lg-3">
+      <div class="card shadow-soft text-center">
+        <div class="card-body">
+          <div class="text-muted">Séances passées</div>
+          <div class="display-6 fw-bold">{{ kpi.total_seances|default:"0" }}</div>
         </div>
       </div>
     </div>
-  </div>
+    <div class="col-6 col-lg-3">
+      <div class="card shadow-soft text-center">
+        <div class="card-body">
+          <div class="text-muted">Présences</div>
+          <div class="display-6 fw-bold">{{ kpi.total_presences|default:"0" }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="card shadow-soft text-center">
+        <div class="card-body">
+          <div class="text-muted">Taux</div>
+          <div class="display-6 fw-bold">{{ kpi.taux_presence|default:"0" }}%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card shadow-soft">
+        <div class="card-body">
+          <h5 class="mb-3">Prochaines séances</h5>
+          {% if prochaines_seances %}
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>Début</th>
+                    <th>Fin</th>
+                    <th>Classe</th>
+                    <th>Cours</th>
+                    <th>Enseignant</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for s in prochaines_seances %}
+                  <tr>
+                    <td>{{ s.debut }}</td>
+                    <td>{{ s.fin }}</td>
+                    <td>{{ s.classe.nom }}</td>
+                    <td>{{ s.cours.titre }}</td>
+                    <td>{{ s.enseignant.user.get_full_name|default:s.enseignant.user.username }}</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-muted">Aucune séance à venir.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {# --------- PARENT --------- #}
+  {% if role == "parent" %}
+    <div class="col-12">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h3 class="m-0">Espace parent</h3>
+        <div class="text-muted small">Suivi des présences des enfants</div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card shadow-soft">
+        <div class="card-body">
+          {% if enfants_stats %}
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>Élève</th>
+                    <th>Présences</th>
+                    <th>Total marquages</th>
+                    <th>Taux</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for item in enfants_stats %}
+                  <tr>
+                    <td>{{ item.etudiant.user.get_full_name|default:item.etudiant.user.username }}</td>
+                    <td>{{ item.presents }}</td>
+                    <td>{{ item.total }}</td>
+                    <td>{{ item.taux }}%</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-muted">Aucune donnée à afficher pour le moment.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {# --------- AUTHENTIFIÉ/INCONNU --------- #}
+  {% if role == "user" %}
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-soft">
+        <div class="card-body">
+          <h3 class="mb-2">Bienvenue</h3>
+          <p class="text-muted">Votre rôle n’est pas reconnu, menu minimal activé.</p>
+          <a class="btn btn-primary" href="{% url 'liste_seances' %}">Voir les séances</a>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
 </div>
-
 {% endblock %}

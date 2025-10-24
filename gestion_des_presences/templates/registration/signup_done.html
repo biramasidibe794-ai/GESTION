@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Vérifiez votre email{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-5 mx-auto text-center">
+    <div class="card shadow-soft">
+      <div class="card-body p-4">
+        <h4>Vérifiez votre email 📩</h4>
+        <p>Un lien d’activation a été envoyé à votre adresse.</p>
+        {% if token %}
+        <div class="alert alert-secondary small text-break">
+          <b>Lien direct (développement) :</b><br>
+          <code>/activate/?t={{ token }}</code>
+        </div>
+        {% endif %}
+        <p class="mt-3 small">Pas reçu le mail ? <a href="{% url 'resend_activation' %}">Renvoyer le lien</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

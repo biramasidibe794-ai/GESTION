@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Mes cours{% endblock %}
+
+{% block content %}
+<h3 class="mb-3">Mes cours</h3>
+
+{% if cours %}
+  <div class="row g-3">
+    {% for c in cours %}
+      <div class="col-12 col-md-6">
+        <div class="card shadow-soft h-100">
+          <div class="card-body">
+            <h5 class="card-title mb-2">{{ c.nom|default:c }}</h5>
+            <div class="text-muted small mb-2">
+              Classes :
+              {% for cl in c.classes.all %}
+                <span class="badge bg-light text-dark">{{ cl.nom|default:cl }}</span>
+              {% empty %} -
+              {% endfor %}
+            </div>
+            <div class="text-muted small">
+              Enseignants :
+              {% for e in c.enseignants.all %}
+                <span class="badge bg-secondary">{{ e.user.get_full_name|default:e.user.username }}</span>
+              {% empty %} -
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-info">Aucun cours trouvé.</div>
+{% endif %}
+{% endblock %}

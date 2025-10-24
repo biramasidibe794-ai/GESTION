@@ -31,3 +31,7 @@ body{
 @media (max-width:767px){
   .hero{padding:1.25rem}
 }
+
+.table > :not(caption) > * > * { vertical-align: middle; }
+.form-control, .form-select { min-height: 44px; }
+.btn { min-height: 40px; }

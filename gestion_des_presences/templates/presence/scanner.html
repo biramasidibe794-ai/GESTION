@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Scanner le QR{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-12 col-lg-8 mx-auto">
+    <div class="card shadow-soft">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div>
+            <h3 class="mb-1">Scanner le QR</h3>
+            <div class="text-muted small">
+              Autorise l’accès à la caméra. Fonctionne en HTTPS (ou en localhost).
+            </div>
+          </div>
+          <div>
+            <a href="{% url 'accueil' %}" class="btn btn-outline-secondary btn-sm">Retour</a>
+          </div>
+        </div>
+
+        <hr>
+
+        <!-- Zone d’aperçu du scanner -->
+        <div id="qr-reader" class="rounded overflow-hidden" style="max-width: 520px; margin: 0 auto;"></div>
+
+        <div class="text-center mt-3 text-muted small">
+          Si la caméra ne démarre pas, vérifie que tu es <strong>en HTTPS</strong> (ou <code>http://localhost</code>) et que tu as autorisé l’accès à la caméra.
+        </div>
+
+        <hr>
+
+        <!-- Fallback manuel : au cas où on veut coller un token/URL -->
+        <div class="mt-3">
+          <h6>Saisir manuellement (fallback)</h6>
+          <form onsubmit="return handleManualSubmit(event)">
+            <div class="input-group">
+              <input id="manual-input" type="text" class="form-control" placeholder="Colle ici l'URL ou le token (t=...)" required>
+              <button class="btn btn-primary" type="submit">Valider</button>
+            </div>
+            <div class="form-text">
+              Tu peux coller l’URL complète (se terminant par <code>?t=...</code>) ou seulement le <code>token</code>.
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+  <!-- Librairie scanner (CDN). html5-qrcode est simple et robuste -->
+  <script src="https://unpkg.com/html5-qrcode" defer></script>
+
+  <script>
+    // Attend que la lib soit chargée (defer + DOMContentLoaded)
+    document.addEventListener("DOMContentLoaded", function(){
+      // Si la librairie n'a pas chargé (offline), on laisse le fallback manuel
+      if (!window.Html5Qrcode || !window.Html5QrcodeScanner) return;
+
+      const onScanSuccess = (decodedText, decodedResult) => {
+        // decodedText peut être l'URL complète ".../presence/scan/?t=XYZ" ou seulement un token
+        try {
+          let token = null;
+
+          // 1) Essayer d'extraire ?t=... si c'est une URL
+          try {
+            const u = new URL(decodedText);
+            const tParam = u.searchParams.get("t");
+            if (tParam) token = tParam;
+          } catch(e) {
+            // Pas une URL -> rien
+          }
+
+          // 2) Si pas trouvé, on suppose que decodedText est directement le token
+          if (!token) {
+            // On autorise des formes "t=XXXX" collées
+            const m = decodedText.match(/(?:^|[?&])t=([^&]+)/i);
+            token = m ? m[1] : decodedText.trim();
+          }
+
+          if (!token) {
+            alert("QR lu, mais token introuvable.");
+            return;
+          }
+
+          // Redirection vers ta vue existante de scan
+          const target = "{% url 'scan_qr' %}" + "?t=" + encodeURIComponent(token);
+          window.location.assign(target);
+        } catch (err) {
+          console.error(err);
+          alert("Erreur lors du traitement du QR.");
+        }
+      };
+
+      const onScanError = (errorMessage) => {
+        // Silencieux (évite le spam de logs)
+        // console.debug(errorMessage);
+      };
+
+      const scanner = new Html5QrcodeScanner(
+        "qr-reader",
+        {
+          fps: 10,
+          qrbox: (viewfinderWidth, viewfinderHeight) => {
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            const boxSize = Math.floor(minEdge * 0.7);
+            return { width: boxSize, height: boxSize };
+          },
+          rememberLastUsedCamera: true,
+          showTorchButtonIfSupported: true,
+          showZoomSliderIfSupported: true,
+        },
+        /* verbose= */ false
+      );
+      scanner.render(onScanSuccess, onScanError);
+    });
+
+    // Fallback manuel
+    function handleManualSubmit(e){
+      e.preventDefault();
+      const val = document.getElementById("manual-input").value.trim();
+      if(!val) return false;
+
+      let token = null;
+      try {
+        const u = new URL(val);
+        const tParam = u.searchParams.get("t");
+        token = tParam || null;
+      } catch(e) {
+        // Pas une URL, on check si c'est "t=xxx"
+        const m = val.match(/(?:^|[?&])t=([^&]+)/i);
+        token = m ? m[1] : val;
+      }
+      if(!token){
+        alert("Token introuvable. Colle l’URL complète ou seulement le token.");
+        return false;
+      }
+      const target = "{% url 'scan_qr' %}" + "?t=" + encodeURIComponent(token);
+      window.location.assign(target);
+      return false;
+    }
+  </script>
+{% endblock %}
