@@ -28,6 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "127.0.0.1",    # 🔧 CHANGÉ
     "localhost",    # 🔧 CHANGÉ
+     "192.168.1.11",   # ← IP de ton PC (celle que ton téléphone utilise)
 ]
 
 

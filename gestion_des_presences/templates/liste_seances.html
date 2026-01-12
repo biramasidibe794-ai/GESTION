@@ -47,8 +47,8 @@
               {% endif %}
             </td>
             <td class="text-end">
-              <a class="btn btn-sm btn-outline-primary" href="{% url 'seance_update' s.id %}">Modifier</a>
-              <a class="btn btn-sm btn-outline-secondary" href="{% url 'seance_update' s.id %}#qr">QR</a>
+              <a ine-primary" href="{% url 'seance_update' s.id %}">Modifier</a>
+              <a class="btn btn-sm btn-outline-secondary" href="{% url 'seance_qr_page' s.id %}">QR</a>
               <a class="btn btn-sm btn-outline-danger" href="{% url 'seance_delete' s.id %}">Supprimer</a>
             </td>
           </tr>

@@ -210,3 +210,16 @@ class AssignClasseForm(forms.Form):
         label="Statut",
         widget=forms.Select(attrs={"class": "form-select"})
     )
+
+class SignupForm(UserCreationForm):
+    email = forms.EmailField(required=True, help_text="Obligatoire.")
+
+    class Meta:
+        model = User
+        fields = ("username", "first_name", "last_name", "email", "password1", "password2")
+
+    def clean_email(self):
+        email = self.cleaned_data["email"].lower()
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError("Cet email est déjà utilisé.")
+        return email

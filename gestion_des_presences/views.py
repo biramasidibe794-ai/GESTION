@@ -561,31 +561,6 @@ def admin_index(request):
     return render(request, "admin_index.html", context)
 
 
-class SignupForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = ("username", "first_name", "last_name", "email")
-
-class SignupForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = ("username", "first_name", "last_name", "email")
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for f in self.fields.values():
-            css = f.widget.attrs.get("class", "")
-            f.widget.attrs["class"] = (css + " form-control").strip()
-
-class SignupForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = ("username", "first_name", "last_name", "email")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for f in self.fields.values():
-            css = f.widget.attrs.get("class", "")
-            f.widget.attrs["class"] = (css + " form-control").strip()
 
 
 # --- Formulaires -----------------------------------------------------------------
@@ -616,80 +591,93 @@ class NiceAuthForm(AuthenticationForm):
 
 
 # --- Inscription -----------------------------------------------------------------
+from .forms import SignupForm
+
 def signup(request):
     if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.role = "etudiant"
-            user.is_active = False
+            user: User = form.save(commit=False)
+            user.is_active = False  # activation par email
+            user.username = user.username.lower()
+            user.email = user.email.lower()
             user.save()
 
-            token = ActivationToken.objects.create(
-                user=user,
-                expires_at=timezone.now() + timedelta(hours=48)
+            # lien d’activation
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            activate_url = request.build_absolute_uri(
+                reverse("activate") + f"?uid={uid}&token={token}"
             )
 
-            request.session["activation_token"] = str(token.token)
-
-            activation_url = request.build_absolute_uri(
-                reverse("activate") + f"?t={token.token}"
+            # envoi email (console backend => visible dans la console)
+            subject = "Active ton compte"
+            message = render_to_string(
+                "emails/activation.txt",
+                {"user": user, "activate_url": activate_url}
             )
+            send_mail(subject, message, None, [user.email], fail_silently=True)
 
-            send_mail(
-                subject="Activez votre compte — Présences",
-                message=(
-                    f"Bonjour {user.first_name or user.username},\n\n"
-                    f"Activez votre compte ici : {activation_url}\n\n"
-                    "Si vous n’êtes pas à l’origine de cette inscription, ignorez ce message."
-                ),
-                from_email=None,
-                recipient_list=[user.email],
-                fail_silently=True,
-            )
             return redirect("signup_done")
+        # sinon: laisser retomber pour ré-afficher le formulaire avec erreurs (200)
     else:
         form = SignupForm()
     return render(request, "registration/signup.html", {"form": form})
 
 
 def signup_done(request):
-    tok = request.session.get("activation_token")
-    return render(request, "registration/signup_done.html", {"token": tok})
+    return render(request, "registration/signup_done.html")
 
 
-# --- Activation ------------------------------------------------------------------
 def activate(request):
-    tok = request.GET.get("t")
-    context = {"ok": False, "reason": None}
-
-    if not tok:
-        context["reason"] = "Lien d’activation invalide."
-        return render(request, "registration/activation_result.html", context)
+    uid = request.GET.get("uid")
+    token = request.GET.get("token")
+    if not uid or not token:
+        messages.error(request, "Lien d’activation invalide.")
+        return redirect("signup")
 
     try:
-        token = ActivationToken.objects.select_related("user").get(token=tok)
-    except ActivationToken.DoesNotExist:
-        context["reason"] = "Token introuvable ou déjà utilisé."
-        return render(request, "registration/activation_result.html", context)
+        uid_int = force_str(urlsafe_base64_decode(uid))
+        user = User.objects.get(pk=uid_int)
+    except Exception:
+        user = None
 
-    if token.used_at:
-        context["reason"] = "Ce lien a déjà été utilisé."
-        return render(request, "registration/activation_result.html", context)
+    if user and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save(update_fields=["is_active"])
+        messages.success(request, "Compte activé, bienvenue !")
+        login(request, user)
+        return redirect("admin_index")  # ou "accueil"
+    else:
+        messages.error(request, "Lien d’activation invalide ou expiré.")
+        return redirect("signup")
 
-    if token.expires_at and timezone.now() > token.expires_at:
-        context["reason"] = "Le lien d’activation a expiré."
-        return render(request, "registration/activation_result.html", context)
+def resend_activation(request):
+    if request.method == "POST":
+        email = (request.POST.get("email") or "").lower().strip()
+        try:
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            messages.error(request, "Aucun compte avec cet email.")
+            return redirect("resend_activation")
 
-    user = token.user
-    user.is_active = True
-    user.save(update_fields=["is_active"])
-    token.used_at = timezone.now()
-    token.save(update_fields=["used_at"])
+        if user.is_active:
+            messages.info(request, "Ce compte est déjà activé.")
+            return redirect("login")
 
-    messages.success(request, "Votre compte est activé. Vous pouvez vous connecter.")
-    context["ok"] = True
-    return render(request, "registration/activation_result.html", context)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        activate_url = request.build_absolute_uri(
+            reverse("activate") + f"?uid={uid}&token={token}"
+        )
+        subject = "Nouveau lien d’activation"
+        message = render_to_string("emails/activation.txt", {"user": user, "activate_url": activate_url})
+        send_mail(subject, message, None, [user.email], fail_silently=True)
+
+        messages.success(request, "Lien d’activation renvoyé. Vérifie la console email.")
+        return redirect("signup_done")
+
+    return render(request, "resend_activation.html")
 
 
 # --- Renvoyer l’activation -------------------------------------------------------

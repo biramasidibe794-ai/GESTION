@@ -1,1 +1,39 @@
-<img src="{% url 'seance_qr_png' seance.id %}" ...>
+{% extends "base.html" %}
+{% block title %}QR Séance — {{ seance.cours.titre }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <h3 class="mb-3">QR Code pour la séance</h3>
+
+  <div class="mb-3">
+    <strong>Cours :</strong> {{ seance.cours.titre }}<br>
+    <strong>Classe :</strong> {{ seance.classe.nom }}<br>
+    <strong>Enseignant :</strong>
+    {% if seance.enseignant.user %}
+      {{ seance.enseignant.user.get_full_name|default:seance.enseignant.user.username }}
+    {% else %}
+      —
+    {% endif %}
+    <br>
+    <strong>Horaire :</strong>
+    {{ seance.debut|date:"d/m/Y H:i" }} → {{ seance.fin|date:"d/m/Y H:i" }}
+  </div>
+
+  <div class="card mx-auto" style="max-width: 280px;">
+    <div class="card-body text-center">
+      <img id="qr-img"
+           src="{% url 'seance_qr_png' seance.id %}"
+           alt="QR code de la séance"
+           class="img-fluid" />
+    </div>
+  </div>
+
+  <p class="mt-3 text-center text-muted">
+    Ce QR est lié au lien suivant :<br>
+    <small>{{ scan_url }}</small><br>
+    (lu par l'étudiant via la page scanner ou une app QR)
+  </p>
+
+</div>
+{% endblock %}
